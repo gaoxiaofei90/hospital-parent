@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+            classpath*:/config/**/*.bean.xml
+        </param-value>
+	</context-param>
+
+
+	<listener>
+		<listener-class>com.jcl.common.spring.context.AppContextLoaderListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>xssFilter</filter-name>
+		<filter-class>com.jcl.common.spring.web.XssFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>xssFilter</filter-name>
+		<url-pattern>*.jspx</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>*.jspx</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>encoding</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>encoding</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>encoding</filter-name>
+		<url-pattern>*.jspx</url-pattern>
+	</filter-mapping>
+
+
+	<!--action层日志记录-->
+	<filter>
+		<filter-name>actionLayerLogFilter</filter-name>
+		<filter-class>com.llw.hospital.bs.filter.ActionInvokeLog</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>actionLayerLogFilter</filter-name>
+		<url-pattern>*.jspx</url-pattern>
+	</filter-mapping>
+
+
+
+	<servlet>
+		<servlet-name>JclBsServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/config/web/servlet.web.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>JclBsServlet</servlet-name>
+		<url-pattern>*.jspx</url-pattern>
+	</servlet-mapping>
+
+	<mime-mapping> 
+		<extension>zip</extension> 
+		<mime-type>application/zip</mime-type> 
+	</mime-mapping> 
+	<mime-mapping> 
+		<extension>xls</extension> 
+		<mime-type>application/msexcel</mime-type> 
+	</mime-mapping> 
+	<mime-mapping> 
+		<extension>rar</extension> 
+		<mime-type>application/rar</mime-type> 
+	</mime-mapping> 
+
+    <welcome-file-list>
+		<welcome-file>/login.html</welcome-file>
+	</welcome-file-list>
+    
+</web-app>

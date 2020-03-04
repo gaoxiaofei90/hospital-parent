@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>抽样</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/layui/css/admin.css" media="all">
+     <style type="text/css">
+ .centent
+ {
+ width: 100%;
+ }
+ .cententl
+ {
+ float: left;
+ }
+ 
+ .btnAdd
+ {
+ float: left;
+ padding:30px 5px;
+ }
+ 
+ .mandatory:before{
+	    color:#FF5858;
+	    content:"✱";
+	} 
+ </style>
+ 
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form">
+            <div class="layui-card-body">
+                <div style="border-bottom: 1px solid #DDDDDD;margin: 10px 0px;">
+                    <div class="layui-card-head" id="headerTitle">添加<span class="layui-font-auxi">&nbsp;</span>
+                    </div>
+                    <div class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item layui-form" style="margin-top: 7px;">
+                                <div class="layui-form-item" style="margin-top: 7px;">
+                              <div class="layui-item-lemo">
+                                    <div class="layui-inline">
+                                        <div class="layui-title-lable mandatory">抽查批次</div>
+                                        <div class="layui-input-inline" style="width: 130px;">
+                                            <input type="text" name="samplingBatch" id="samplingBatch"  placeholder="系统自动生成" autocomplete="off"  class="layui-input layui-btn-disabled" maxlength=50 class="layui-input">
+                                             <input type="text" name="samplingId"  autocomplete="off" style="display:none" class="layui-input">
+                                        </div>
+                                    </div>
+
+  									<div class="layui-inline">
+	                                    <div class="layui-title-lable mandatory">抽查描述</div>
+									    <div class="layui-input-inline" style="width: 250px;">
+									      <input type="text" name="samplingName" id="samplingName" lay-verify="required|inputLimit"   maxlength=50 autocomplete="off" placeholder="抽查描述" class="layui-input">
+									    </div>
+						     		</div>
+                            </div>
+                            
+                             <div class="layui-item-lemo">
+                              <div class="layui-inline" id="checkRateDiv">
+                                        <div class="layui-title-lable mandatory">抽查比列</div>
+                                        <div class="layui-input-inline" style="width: 110px;">
+                                            <input type="text" name="checkRate" id="checkRate" lay-verify="required|validateMoney"  placeholder="1-100之间的整数" autocomplete="off" class="layui-input">
+                                        </div>
+                                       <div class="layui-form-mid layui-word-aux">%</div>
+                              </div>
+
+						     <div class="layui-inline" style="min-width: 300px;">
+                                    <label class="layui-title-lable mandatory">抽查时间</label>
+                                    <div class="layui-select-mete">
+                                        <div class="layui-input-inline" style="width: 230px;">
+                                            <input type="text" id="test-laydate-start"  lay-verify="required" lay-filter="beginDate" class="layui-input"  name="startTime" readonly="" placeholder="yyyy-MM-dd HH:mm">
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 20px;margin-right: 0;height: 32px;line-height: 32px;">
+                                            ~
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 230px;">
+                                            <input type="text" id="test-laydate-end" lay-verify="required"  lay-filter="endDate" class="layui-input" readonly="" name="finishTime" placeholder="yyyy-MM-dd HH:mm">
+                                        </div>
+                                    </div>
+                               </div>
+						    </div>
+						    
+					       <div class="layui-item-lemo">
+							     <div class="layui-inline" >
+	                                    <div class="layui-title-lable mandatory">统筹区</div>
+	                                  <div class="layui-select-mete" style="width: 140px;">
+                                              <input type="text" name="zoneCode" id="zoneCode"  autocomplete="off" style="display:none" class="layui-input">   
+                                              <input type="text" name="zoneName" id="zoneName" autocomplete="off"  class="layui-input layui-btn-disabled">  
+	                                   </div> 
+	                             </div> 
+	                             
+	                              <div class="layui-inline" >
+	                              		 <div class="layui-title-lable mandatory" style="margin-left:20px">业务类型</div>
+	                                     <div class="layui-select-mete" id="busiTypeDiv">
+		                                    <select name="busiType"  lay-filter="busiType" id="busiType" placeholder="业务类型"
+									        	llw-select-key="busiType" llw-select-label="busiName" 
+									        	llw-select-value="1" llw-select-url="../../medical/business/busiList.jspx">
+											</select>
+	                                     </div>
+	                                      <input type="text" name="sysCode" id="sysCode" autocomplete="off" style="display:none" class="layui-input">
+	                             </div>
+                             </div>
+						    		
+                          </div>
+
+                        </div>
+					
+                    </div>
+                </div>
+            <div class="layui-card layui-col-md5 "  >
+                    <div class="layui-card-body" pad15="">
+                        <div class="layui-form" wid100="" lay-filter="">
+                       
+						
+                            <div class="layui-card-header" >
+                            <div class="layui-item-lemo"><!-- layui-form-item -->
+                            	 <div class="layui-inline">
+                            	 	 <label class="layui-title-lable" id="canCheck">可选医院</label>
+                            	</div>
+                            	<div class="layui-inline" style="float:right">
+                            	<div class="layui-input-inline">
+                            		<input class="layui-input" name="id" style="width:250px;" id="lSearchId" maxlength=20 autocomplete="off">
+                            	</div>	
+                            		<!-- <button class="layui-btn" data-type="reload" id="search">搜索</button> -->
+                            	 <button class="layui-btn layui-btn-normal search"  data-type="canCheckReload" >
+                                            	查询
+                                 </button>
+                            	</div>
+                            </div>
+                            	<!-- <span id="canCheck">可选医院</span>
+                            	<span>搜索ID：</span>
+                            	<div class="layui-input-block">
+                            	 <input class="layui-input" name="id" id="lSearchId" autocomplete="off">
+                            	 <button class="layui-btn" data-type="reload" id="search">搜索</button>
+                            	 </div> -->
+                            	 <!-- <div class="demoTable">
+									  
+									  <div class="layui-inline">
+									    <input class="layui-input" name="id" id="lSearchId" autocomplete="off">
+									  </div>
+									  <button class="layui-btn" data-type="reload" id="search">搜索</button>
+								</div> -->
+                            </div>
+                            	
+						
+				               <table id="ltable" class="layui-table"  lay-filter="" >
+				               </table>
+                        </div>
+                    </div>
+            </div>
+           
+            <div class="layui-card layui-col-md2">
+                    <div class="layui-block" style="margin-top: 50px;">
+                            <div class="layui-input-block" style="margin: 0 auto;"><!-- onclick="addBtn()" -->
+                                <button type="button"  id ="addBtn" class="layui-btn layui-btn-sm layuiadmin-btn-useradmin" style="margin: 0 auto;display: block;">点击添加 &gt;&gt;</button>
+                            </div>
+                            <div class="layui-input-block" style="margin: 0 auto;">
+                                <button type="button" id ="delBtn" class="layui-btn layui-btn-sm layuiadmin-btn-useradmin" style="margin: 0 auto;display: block;">&lt;&lt;点击移除 </button> 
+                            </div>
+                    </div>
+           </div>
+           
+           <div class="layui-card layui-col-md5">
+                    <div class="layui-card-body" pad15="">
+                        <div class="layui-form" wid100="" lay-filter="">
+                           <!--  <div class="layui-card-header" id="isChecked">已选医院</div> -->
+                           <div class="layui-card-header" >
+                           		 <div class="layui-item-lemo"><!-- layui-form-item -->
+	                            	 <div class="layui-inline">
+	                            	 	 <label class="layui-title-lable" id="isChecked">已选医院</label>
+	                            	</div>
+	                            	<div class="layui-inline" style="float:right">
+	                            	<div class="layui-input-inline">
+	                            		<input class="layui-input" name="rSearchId" style="width:250px;" id="rSearchId" maxlength=20 autocomplete="off">
+	                            	</div>	
+	                            		<!-- <button class="layui-btn" data-type="reload" id="search">搜索</button> -->
+	                            	 <button class="layui-btn layui-btn-normal search"  data-type="isCheckedReload" >
+	                                            		查询
+	                                        </button>
+	                            	</div>
+                            	</div>
+                           </div>
+                            <table id="rtable" class="layui-table" lay-filter="rtable" >
+               				</table>
+
+                        </div>
+                    </div>
+           </div>
+           <div class="layui-form-item layui-form" id="samplingDetailDiv" hidden style="margin-top: 7px;">
+           		 <div class="layui-card-head">抽样人员详情<span class="layui-font-auxi">&nbsp;</span>
+                 </div>
+            	 <table id="samplingDetail" class="layui-table"  lay-filter="" >
+				 </table>
+            </div>	
+            </div>
+            
+            
+            <button id="LAY-front-submit" style="display: none;" lay-submit="" lay-filter="LAY-front-submit"></button>
+        </div>
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script src="../../static/jquery/jquery.js"></script>
+<script>
+//var checkDatas = new Array();
+var firstEnter = true;
+    layui.config({
+        base: '../../static/layui/' //静态资源所在路径
+    }).extend({
+        index: 'modules/index' //主入口模块
+    }).use(['index', 'table','laydate','admin','code','laytpl'], function() {
+        var $ = layui.$,
+            form = layui.form,
+            admin = layui.admin,
+            laydate = layui.laydate,
+            laytpl = layui.laytpl,
+            table = layui.table;
+            var date = new Date(); 
+            var samplingId = layui.util.getUrlParam("samplingId");
+            var opType = layui.util.getUrlParam("event");
+            var samplingType = layui.util.getUrlParam("samplingType");
+           // checkDatas = parent.checkedData;
+            //console.log("--checkDatas----"+checkDatas);
+            var editZoneCode = "";
+            var editSysCode = "";
+            var editBusiType = "";
+            var editBusiName = "";
+            layui.util.ajax({
+						url: "./../../medical/sampling/info.jspx?pk=" + samplingId,
+						async:false,
+						success: function(res) {
+							if(res.respData) {
+							console.log("-------"+JSON.stringify(res.respData));
+								layui.$("input,select,textarea").each(function() {
+									console.log(this.name+"this----"+JSON.stringify($(this))+"---"+$(this).attr("name"));
+									if(this.name == "finishTime" || this.name == "startTime"){
+										var d = layui.util.toDateString(res.respData[this.name],'yyyy-MM-dd HH:mm');
+										$(this).val(d);
+									}else{
+										$(this).val(res.respData[this.name]);
+									}
+								});
+								editZoneCode = res.respData.zoneCode;
+								editBusiType = res.respData.busiType;
+								editSysCode = res.respData.sysCode;
+								editBusiName = res.respData.busiName;
+								if(samplingType == 1 && res.respData.hospitals != undefined){
+									parent.checkedData = res.respData.hospitals;
+			            		}else if(samplingType == 2 && res.respData.departments != undefined){
+			            			parent.checkedData = res.respData.departments;
+			            		}else if(samplingType == 3 && res.respData.patients != undefined){
+			            			parent.checkedData = res.respData.patients;
+			            		}
+			            		
+			            		  $("#busiType").attr("llw-select-value",editBusiType);
+							}
+						}
+					});
+					
+				if('view'==opType){
+					$("#samplingBatch").addClass("layui-disabled");	
+					$("#samplingName").addClass("layui-disabled");
+					$("#checkRate").addClass("layui-disabled");
+					$("#test-laydate-start").addClass("layui-disabled");
+					$("#test-laydate-end").addClass("layui-disabled");
+					$("#addBtn").addClass("layui-btn-disabled");	
+					$("#delBtn").addClass("layui-btn-disabled");
+					$("#addBtn").attr("disabled","disabled");	
+					$("#delBtn").attr("disabled","disabled");
+			        $("#busiTypeDiv").empty();
+			        var v = '<input type="text" name="busiType" id="busiType" autocomplete="off"  value="'+editBusiName+'"class="layui-input layui-btn-disabled">';
+					$("#busiTypeDiv").append(v);
+					$(".search").attr("disabled","disabled");
+					$("#lSearchId").addClass("layui-disabled");
+					$("#rSearchId").addClass("layui-disabled");
+					$("#headerTitle").html("查看");
+					var samplingDetail = table.render({
+					    elem: '#samplingDetail'
+					   // ,height: 300
+					    ,url: '../../medical/plan/getPlanList.jspx?samplingId='+samplingId
+					    ,page: true //开启分页
+					    ,id: 'samplingDetail'
+					    ,cols:[[ //表头
+						       {field: 'name', title: '姓名', width:80}
+						      ,{field: 'idcard', title: '身份证号', width:160, sort: true}
+						      ,{field: 'hospitalName', title: '就诊医院', width:150, sort: true}
+						      ,{field: 'departName', title: '科室', width:100, sort: true}
+						      ,{field: 'diagnosis', title: '疾病', width:150, sort: true}
+						      ,{field: 'medicalNo', title: '住院号', width:120}
+						      ,{field: 'bedNo', title: '床号', width:100}
+						      ,{field: 'recogType', title: '认证类型', width:100}
+						      ,{field: 'status', title: '当前状态', width:120, sort: true}
+						    ]]
+			  		});
+			  		$("#samplingDetailDiv").show();
+	  	
+				} 
+				
+				if('edit'==opType){
+					$("#headerTitle").html("编辑");
+				}
+			    var dataUrl = "";
+			    var col =  [[ //表头
+						      {type:'checkbox'},
+						      {field: 'hospitalId', title: 'ID', width:80, sort: true}
+						      ,{field: 'hospitalName', title: '医院名称', width:150}
+						      ,{field: 'hospitalGrade', title: '医院等级', width:150, sort: true}
+						    ]];
+				if(samplingType == 1){
+				    //添加
+					if(samplingId == 0){
+					    $("#samplingName").val("按医院抽查");
+						dataUrl = "../../medical/hospitalRelation/getHospitalInfo.jspx?zoneCode=-1&busiType=-1";
+					}else{
+						dataUrl = "../../medical/hospitalRelation/getHospitalInfo.jspx?zoneCode="+editZoneCode+"&sysCode="+editSysCode;
+					}	
+			  		$("#canCheck").html("可选医院");
+			  		$("#isChecked").html("已选医院");
+			  		$("#lSearchId").attr("placeholder","输入医院名称查询可选医院");
+			  		$("#rSearchId").attr("placeholder","输入医院名称查询已选医院");
+				}else if(samplingType == 2){
+					$("#canCheck").html("可选科室");
+					$("#isChecked").html("已选科室");
+					$("#lSearchId").attr("placeholder","输入科室名称查询可选科室");
+			  		$("#rSearchId").attr("placeholder","输入科室名称查询已选科室");
+					if(samplingId == 0){
+						$("#samplingName").val("按科室抽查");
+						dataUrl = "../../medical/deparrelation/getDepartmentInfo.jspx?zoneCode=-1&busiType=-1";
+					}else{
+						dataUrl = "../../medical/deparrelation/getDepartmentInfo.jspx?zoneCode="+editZoneCode+"&sysCode="+editSysCode;
+					}	
+			    	col = [[ //表头
+					      {type:'checkbox'},
+					      {field: 'hospitalId', title: 'ID', width:30, sort: true,hide:true}
+					      ,{field: 'departId', title: 'ID', width:30, sort: true,hide:true}
+					      ,{field: 'hospitalName', title: '医院名称', width:150}
+					      ,{field: 'hospitalGrade', title: '医院等级', width:100}
+					      ,{field: 'departlName', title: '科室名称', width:100, sort: true}
+					     ]];
+				}else{
+					$("#canCheck").html("可选病人");
+					$("#isChecked").html("已选病人");
+					$("#lSearchId").attr("placeholder","输入病人名称查询可选病人");
+			  		$("#rSearchId").attr("placeholder","输入病人名称查询已选病人");
+			  		
+					$("#checkRateDiv").remove();
+					if(samplingId == 0){
+						$("#samplingName").val("按指定病人抽查");
+						dataUrl = "../../medical/medical/getMedicalInfo.jspx?zoneCode=-1&busiType=-1";
+					}else{
+						dataUrl = "../../medical/medical/getMedicalInfo.jspx?status=1&zoneCode="+editZoneCode+"&sysCode="+editSysCode+"&busiType="+editBusiType;
+					}	
+			    	col = [[ //表头
+					      {type:'checkbox'}
+					      ,{field: 'medicalId', title: 'ID', width:30, sort: true,hide:true}
+					      ,{field: 'hospitalId', title: 'ID', width:30, sort: true,hide:true}
+					      ,{field: 'departId', title: 'ID', width:30, sort: true,hide:true}
+					      ,{field: 'name', title: '姓名', width:80}
+					      ,{field: 'diagnosis', title: '诊断', width:80}
+					      ,{field: 'hospitalName', title: '医院', width:90}
+					      ,{field: 'departName', title: '科室', width:90, sort: true}
+					    ]];
+				}	
+           
+           	var lefttable = table.render({
+				    elem: '#ltable'
+				    ,height: 300
+				    /* ,parseData:function(res){
+				    	return res;
+				    } */
+				    ,url: dataUrl
+				   //,data:[]
+				    ,page: true //开启分页
+				    ,id: 'ltable'
+				    ,cols:col
+			  	});
+  
+     		table.render({
+			    elem: '#rtable'
+			    ,height: 300
+			    ,loading:false
+			    ,data:parent.checkedData
+			    ,page: true //开启分页
+			    ,cols: col
+			  });
+   			
+            //开始日期
+            var insStart = laydate.render({
+                elem: '#test-laydate-start'
+                ,type: 'datetime'
+                ,min: 0
+    			,max: 7
+                ,format: 'yyyy-MM-dd HH:mm'
+                ,done: function(value, date){
+                    //更新结束日期的最小日期
+                    insEnd.config.min = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+
+                    //自动弹出结束日期的选择器
+                    insEnd.config.elem[0].focus();
+                }
+            });
+           
+           
+		            
+             //结束日期
+            var insEnd = laydate.render({
+                elem: '#test-laydate-end'
+                ,type: 'datetime'
+                ,min: 0
+    			,max: 7
+                ,format: 'yyyy-MM-dd HH:mm'
+                ,done: function(value, date){
+                    //更新开始日期的最大日期
+                     insStart.config.max = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+                }
+            });
+            
+             if(samplingId == 0){
+	            laydate.render({
+	            	 elem: '#test-laydate-start'
+	            	  ,value:layui.util.toDateString(new Date().getTime()+2 * 60 * 60 * 1000,'yyyy-MM-dd HH')+":00"
+	            });
+	            
+	            laydate.render({
+                	elem: '#test-laydate-end'
+                	,value:layui.util.toDateString(new Date().getTime()+4 * 60 * 60 * 1000,'yyyy-MM-dd HH')+":00"
+                });
+		     }
+		     
+	        $('#addBtn').on('click', function() {
+	        var checkStatus = table.checkStatus('ltable');
+	      	console.log(JSON.stringify(checkStatus.data));
+       		var arr  = checkStatus.data;
+	  		for(var item in arr){
+	  			console.log(item+"----");
+	  			var hasData = false;
+	  			var checkedData = parent.checkedData;
+	  			if(samplingType == 1){
+	  				for(var i in checkedData){
+		  				if(arr[item].hospitalId == checkedData[i].hospitalId){
+		  			   		hasData = true;
+		  			   }
+	  				}
+	  			}else if(samplingType == 2){
+	  				for(var i in checkedData){
+		  			   if(arr[item].departId == checkedData[i].departId){
+		  			   	hasData = true;
+		  			   }
+	  				}
+	  			}else{
+	  				for(var i in checkedData){
+		  			   if(arr[item].medicalId == checkedData[i].medicalId){
+		  			   	hasData = true;
+		  			   }
+	  				}
+	  			}
+	  			
+	  			if(!hasData){
+	  				parent.checkedData.push(arr[item]);
+	  			}
+	  		}
+	  		
+	  		//要把右边搜索框内容清空
+	  		$("#rSearchId").val("");
+	  		console.log(JSON.stringify(parent.checkedData));
+			table.reload('rtable', {
+					page: {
+							   curr: 1 //重新从第 1 页开始
+						 },
+					  data: parent.checkedData
+					});
+      
+        	});
+        
+         $('#delBtn').on('click', function(obj) {
+          var checkStatus = table.checkStatus('rtable');
+          console.log(checkStatus);
+          var delData = checkStatus.data;
+          var checkedData = parent.checkedData;
+          var refreshData = [];
+          for(var i in checkedData){
+            var flag = 0;
+          	if(samplingType == 1){
+          		for(var v in delData){
+          		 if(checkedData[i].hospitalId == delData[v].hospitalId  ){
+          		 	flag = 1;
+          		 	break;
+          		 }
+  				}
+
+  			}else if(samplingType == 2){
+  				for(var v in delData){
+          		 if(checkedData[i].departId == delData[v].departId  ){
+          		 	flag = 1;
+          		 	break;
+          		 }
+  				}
+  			}else{
+  				for(var v in delData){
+          		 if(checkedData[i].medicalId == delData[v].medicalId  ){
+          		 	flag = 1;
+          		 	break;
+          		 }
+          		 }
+  			}
+          	if(flag == 0){
+          		refreshData.push(checkedData[i]);
+          	}
+          } 
+          parent.checkedData = refreshData;
+          //要把右边的搜索按钮清空
+          $("#rSearchId").val("");
+		  table.reload('rtable', {
+		  			  page: {
+							    curr: 1 //重新从第 1 页开始
+							},
+					  data: refreshData
+					
+		 });
+        });
+        
+        form.verify({
+			validateMoney: [
+			/* /^[+]{0,1}(\d+)$/ */
+			/^([1-9][0-9]{0,1}|100)$/
+			,'请填写1-100的整数'
+	 		]
+ 		});
+ 		
+ 		form.verify({
+            rtable: function (value) {
+               if(parent.checkedData.length < 1){
+                  return "请选择";
+               }
+            }
+        });
+         
+        form.verify({
+            inputLimit: [
+			/^[a-zA-Z0-9%_\u4e00-\u9fa5]+$/
+			,'只能填写中文数字字母下划线%'
+	 		]
+        });
+       
+	
+	 var zoneCode = "-1";
+	 var sysCode = -1;
+	 var busiType = "-1";
+ 	 form.on('select(busiType)', function(data){
+	        zoneCode =  $("#zoneCode").val();
+	        busiType = data.value;
+	         //要把左边的搜索框内容清空
+            $("#lSearchId").val("");
+	        //编辑时首次进入页面也会调用此页面  要把已选项展示
+	        if(firstEnter){
+				firstEnter = false;
+	        }else{
+	        	parent.checkedData = [];
+	        }
+	        
+            /* if(zoneCode != "" && busiType != ""){ */
+            //获取业务系统
+        	 layui.util.ajax({
+					url: "./../../medical/businessSystem/getBusinessSystem.jspx?zoneCode="+zoneCode+"&busiType="+busiType,
+					async:false,
+					success: function(res) {
+						
+						if(res.respData) {
+							sysCode  = res.respData.sysCode;
+							console.log("-------"+JSON.stringify(res.respData)+"------"+res.respDatasysCode);
+							if(sysCode == null){
+							    //未找到业务系统也要刷新表格数据
+							   
+							    console.log("yewuxitongxiugaihou---"+JSON.stringify(parent.checkedData));
+							    changeUrl = "../../medical/hospitalRelation/getHospitalInfo.jspx?zoneCode="+zoneCode+"&sysCode=-1";
+						    	table.reload('ltable', {
+						    		page: {
+							          curr: 1 //重新从第 1 页开始
+							        },
+							    	url:changeUrl
+								});
+								
+								 table.reload('rtable', {
+								 	page: {
+							          curr: 1 //重新从第 1 页开始
+							        },
+							    	data:parent.checkedData
+								});
+								
+							}else{
+								console.log("22222222");
+								$("#sysCode").val(res.respData.sysCode);
+								
+								var changeUrl = "";
+							    if(samplingType == 1){
+							    	changeUrl = "../../medical/hospitalRelation/getHospitalInfo.jspx?zoneCode="+zoneCode+"&sysCode="+sysCode;
+							    }else if(samplingType ==2){
+							    	changeUrl = "../../medical/deparrelation/getDepartmentInfo.jspx?zoneCode="+zoneCode+"&sysCode="+sysCode;
+							    }else{
+							    	changeUrl = "../../medical/medical/getMedicalInfo.jspx?status=1&zoneCode="+zoneCode+"&sysCode="+sysCode+"&busiType="+busiType;
+							    }
+								table.reload('ltable', {
+									page: {
+							          curr: 1 //重新从第 1 页开始
+							        },
+							    	url:changeUrl
+								});
+								
+								 table.reload('rtable', {
+									page: {
+								          curr: 1 //重新从第 1 页开始
+								        },
+							    	data:parent.checkedData
+								});
+								
+							}
+							
+						}else{
+								sysCode = -1;
+							 	console.log("未找到数据---"+JSON.stringify(parent.checkedData));
+							    changeUrl = "../../medical/hospitalRelation/getHospitalInfo.jspx?zoneCode="+zoneCode+"&sysCode="+sysCode;
+						    	table.reload('ltable', {
+						    		page: {
+							          curr: 1 //重新从第 1 页开始
+							        },
+							    	url:changeUrl
+								});
+								
+								 table.reload('rtable', {
+								 	page: {
+							          curr: 1 //重新从第 1 页开始
+							        },
+							    	data:parent.checkedData
+								});
+						}
+					}
+		  });
+		  	console.log("data---"+JSON.stringify(data));
+		/* } */
+ 		});  
+ 		
+ 		     //事件
+        var active = { 
+        	canCheckReload: function(){
+        		var lSearchId = $('#lSearchId').val();
+        		var searchUrl = "../../medical/hospitalRelation/getHospitalInfo.jspx?zoneCode="+zoneCode+"&sysCode="+sysCode+"&hospitalName="+lSearchId;
+        		if(samplingType == 1){
+        			searchUrl = "../../medical/hospitalRelation/getHospitalInfo.jspx?zoneCode="+zoneCode+"&sysCode="+sysCode+"&hospitalName="+lSearchId;
+	  			}else if(samplingType == 2){
+	  				searchUrl = "../../medical/deparrelation/getDepartmentInfo.jspx?zoneCode="+zoneCode+"&sysCode="+sysCode+"&departlName="+lSearchId;
+	  			}else{
+	  				searchUrl =  "../../medical/medical/getMedicalInfo.jspx?status=1&zoneCode="+zoneCode+"&sysCode="+sysCode+"&name="+lSearchId+"&busiType="+busiType;;
+	  			}
+		      	//执行重载
+		  		table.reload('ltable', {
+						page: {
+				          curr: 1 //重新从第 1 页开始
+				        },
+						url:searchUrl
+				});
+		    },
+		    isCheckedReload: function(){
+		        var rSearchIdValue = $("#rSearchId").val();
+		        var toSearchData = parent.checkedData;
+		        var searchData = [];//筛选后的数据
+		        if(rSearchIdValue.trim() == ""){
+		        	searchData = parent.checkedData;
+		        }else{
+		        	if(samplingType == 1){
+		        		for(var i in toSearchData){
+			  				if(toSearchData[i].hospitalName.indexOf(rSearchIdValue) != -1){
+			  					searchData.push(toSearchData[i]);
+			  			   }
+	  					}
+		        	}else if(samplingType == 2){
+		        		for(var i in toSearchData){
+			  				if(toSearchData[i].departlName.indexOf(rSearchIdValue) != -1){
+			  					searchData.push(toSearchData[i]);
+			  			   }
+	  					}
+		        	}else{
+		        		for(var i in toSearchData){
+			  				if(toSearchData[i].name.indexOf(rSearchIdValue) != -1){
+			  					searchData.push(toSearchData[i]);
+			  			   }
+	  					}
+		        	}
+		        	
+		        }
+		       
+		    	table.reload('rtable', {
+								 	page: {
+							          curr: 1 //重新从第 1 页开始
+							        },
+							    	data:searchData
+							});
+		    }
+        };
+
+     
+ 		$(".search").on("click",function(){
+ 			var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+ 		});
+ 		
+    });
+    
+</script>
+</body>
+</html>

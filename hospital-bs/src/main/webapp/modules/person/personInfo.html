@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>人员信息</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+	</head>
+
+	<body>
+
+		<div class="layui-form" lay-filter="layui-form" id="layui-form" style="padding: 20px 0 0 0;">
+            <table class="layui-table" style="margin-top: -10px;">
+	          <input type="text" class="layui-input" style="display: none;" id="personId" name="personId" >
+			  <tr>
+				  <td style="width: 100px;text-align: right;">姓名</td>
+				  <td style="text-align: center;"><input type="text" class="layui-input" name="name" id="name" lay-verify="required"></input></td>
+				  <td rowspan="4" style="width: 200px;text-align:center;"><img id="photoAddress" name="photoAddress"></td>
+			  </tr>
+			  
+			  <tr>
+				  <td style="width: 100px;text-align: right;">身份证号码</td>
+				  <td style="text-align: center;">
+				 	 <input type="text" onchange="changeCard()" class="layui-input" name="idcard" id="idcard" lay-verify="required"></input>
+				  </td>
+			  </tr>
+			  
+			  <tr>
+				  <td style="width: 100px;text-align: right;">性别</td>
+				  <td style="text-align: left;">
+				    <select class="layui-input"  name="sex" id="sex" llw-dict-code="sex" lay-verify="required"/>
+				  </td>
+			  </tr>
+			  <tr>
+				  <td style="width: 100px;text-align: right;">出生日期</td>
+				  <td style="text-align: center;"><input type="text" class="layui-input" name="birthday" id="birthday" lay-verify="required"></input></td>
+			  </tr>
+			</table>
+			
+			<div id="btnList">
+				<button class="layui-btn layui-btn-lg layui-btn-normal" style="margin-left: 20px;"
+					    id="baseInfo" lay-filter="btnSubmit" lay-submit>基本信息保存</button>
+					     
+				<button class="layui-btn layui-btn-lg layui-btn-normal" 
+					    id="modelPhoto" style="margin-left: 20px;display: none;">上传照片建模</button>
+			    
+			 </div>
+					
+            <table id="modelList" class="layui-table" lay-filter="test" 
+            		  style="margin-top:-3px; padding-left: 20px;padding-right: 20px;">
+            </table>
+             
+	        <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
+                {{#  if(d.status == 10 && 'view'!=opType){ }}
+                      <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="forbidden">禁用</a>
+                {{#  } }}
+                {{#  if(d.status == 11 && 'view'!=opType){ }}
+                      <a class="layui-btn layui-btn-xs" lay-event="open">启用</a>
+                {{#  } }}      
+                {{#  if('view'!=opType){ }}
+               		  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                {{#  } }}      
+            </script> 
+              		
+		</div>
+
+		<script src="../../static/layui/layui.js"></script>
+		<script src="../../static/jquery/jquery.js"></script>
+		<script>
+		  var iflag=0,opType,personId,form_;
+		  layui.config({
+		        base: '../../static/layui/' //静态资源所在路径
+		    }).extend({
+		        index: 'modules/index' //主入口模块
+		    }).use(['index','form', 'table','laydate','admin','code','upload'], function() {
+	    	    var $ = layui.$,
+	            form = layui.form,
+	            admin = layui.admin,
+	            laydate = layui.laydate,
+	    	    upload = layui.upload,
+	            table = layui.table;
+	    	    form_ = form;
+ 
+				function showModelData(personId){
+				  table.render({
+					    elem: '#modelList'
+					    ,height: 220
+					    ,parseData:function(res){return res;}
+					    ,url: "../../medical/person/modelList.jspx?personId="+personId
+					    ,cols: [[
+					      {field: 'modelId',  title: '模板编码', width:160, sort: true}
+					      ,{field: 'bioType', title: '生物类型', width:160, sort: true}
+					      ,{field: 'createType', title: '建模方式', width:200, sort: true}
+					      ,{field: 'createTime', title: '建模时间', width:200, sort: true}
+					      ,{field: 'modelStatus', title: '状态', width:120, sort: true}
+					      ,{fixed: 'right',  title: '操作', width: 200, align:'center', toolbar: '#barDemo'}
+					    ]]
+					  });
+			    }
+				 
+				   
+			  //监听行工具事件
+			  table.on('tool(test)', function(obj){ 
+				    var data = obj.data 
+				    ,layEvent = obj.event; 
+				    if(layEvent === 'detail'){ 
+		 	          layer.open({
+		    	            type: 1
+		    	            ,title: false 
+		    	            ,closeBtn: true 
+		    	            ,skin: 'layui-layer-rim'
+		    	            ,area: ['210px', '240px']
+		    	            ,shade: 0.1  
+		    	            ,moveType: 1
+		    	            ,content: "<img style='width: 210px;height:240px;' src='"+data.modelAddress+"'>"
+		    	          });
+				    } else if(layEvent === 'del'){
+					        layer.confirm('真的删除行么', function(index){
+		                    layui.util.ajax({
+		                        type: 'POST',
+		                        url: '../../medical/person/deleteModel.jspx?modelId='+data.modelId,
+		                        contentType: "application/json",
+		                        success: function(res) { 
+							        obj.del();  
+							        showModelData(personId);
+		         					layer.msg("删除成功");
+		                        }
+		                    });
+				      });
+				    } else if(layEvent === 'forbidden'){ 
+	                    layui.util.ajax({
+	                        type: 'POST',
+	                    	url: '../../medical/person/editModel.jspx?modelId='+data.modelId+'&modelStatus=11',
+	                        contentType: "application/json",
+	                        success: function(res) { 
+	                        	showModelData(personId);
+	         					layer.msg("操作成功");
+	                        }
+	                    });
+				    } else if(layEvent === 'open'){ 
+	                    layui.util.ajax({
+	                        type: 'POST',
+	                        url: '../../medical/person/editModel.jspx?modelId='+data.modelId+'&modelStatus=10',
+	                        contentType: "application/json",
+	                        success: function(res) { 
+	                        	showModelData(personId);
+	         					layer.msg("操作成功");
+	                        }
+	                    });
+				    }				 
+				});
+			   
+			  function upLoadModel(personId){
+				    $("#modelPhoto").show();
+		    	    upload.render({
+		    	    	elem: '#modelPhoto'
+	    	    		,multiple: false
+		    	    	,url: './../../medical/person/createModel.jspx?personId='+personId
+		    	    	,done: function(res){
+		    	    		if(res.respCode==500){
+		    	    			 layer.msg(res.respMsg);
+		    	    		}else{
+		    	    		    $("#photoAddress").attr('src',res.respData);
+		    	    		    showModelData(personId);
+		    	    		}
+		    	    	}
+		    	    	,error: function (res) { 
+	                    		alert(res);
+	               		}
+	  	    		});
+			  }
+	    	    
+	    	   form.on('submit(btnSubmit)', function (data) {
+	    	        var field = data.field;
+                	var idcard = field["idcard"].trim();
+           			var name = field["name"].trim();
+           			var sex = field["sex"].trim();
+           			var birthday = field["birthday"].trim();
+           			var idcardPattern = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+           			
+           			if(!idcard || !idcardPattern.test(idcard)) {
+           			 	layer.msg("身份证号码不正确");
+           			 	return;
+           			} 
+           			
+       				var dayPattern = /^((19[2-9]\d{1})|(20((0[0-9])|(1[0-8]))))\-((0?[1-9])|(1[0-2]))\-((0?[1-9])|([1-2][0-9])|30|31)$/;
+       				if(!birthday || !dayPattern.test(birthday)) {
+           				layer.msg("出生日期不正确");
+           			 	return;
+           			} 
+       				
+	    	        field['birthday']=field['birthday']+" 00:00:00.0"
+	    	        delete field.file;
+
+					var requestUrl = "./../../medical/person/save.jspx";
+					if(personId >0 ){
+						requestUrl = "./../../medical/person/update.jspx";
+					}
+					
+                    layui.util.ajax({
+                        type: 'POST',
+                    	url: requestUrl,
+                        data: JSON.stringify(field),
+                        contentType: "application/json",
+                        success: function(res) { 
+         					if(personId==0){
+        	                	personId = res.respData.personId;
+    	     					$("personId").val(res.respData.personId);
+	         					upLoadModel(personId);
+         					}
+         					layer.msg("保存成功");
+                        }
+                    });
+                    
+	    	    });
+
+
+				opType = layui.util.getUrlParam("event");
+				personId = layui.util.getUrlParam("personId");
+				$("personId").val(personId);
+				 
+				if('view'==opType){
+					$("#name").attr("disabled", true); 
+					$("#idcard").attr("disabled", true); 
+					$("#sex").attr("disabled", true); 
+					$("#birthday").attr("disabled", true); 
+					$("#btnList").hide();
+				}
+				
+				layui.util.ajax({
+					url: "./../../medical/person/info.jspx?pk=" + personId,
+					success: function(res) { 
+						if(res.respData) {
+							form.val('layui-form',res.respData);
+							if(res.respData.photoAddress){
+								$("#photoAddress").attr('src',res.respData.photoAddress);
+							}else{
+								$("#photoAddress").attr('src','./../../static/imgs/userDefault.png');
+							}
+						}
+					}
+				});	    	   
+
+				showModelData(personId);
+				
+				if(personId > 0){
+				    upLoadModel(personId);
+				}
+				
+	    })
+		    
+		    
+	function changeCard(){
+		  if(iflag++ == 0){return;}
+		  var idcard = $("#idcard").val().trim();
+ 		  var idcardReg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;
+   		  if(!idcard || !idcardReg.test(idcard)) {
+   			 	layer.msg("身份证号码不正确");
+   			 	return;
+   		   } 		  
+		  var sex = idcard.substring(16,17);
+		  if(sex%2==0) {
+			  form_.val('layui-form',{
+				  sex:"2"
+			  })
+		  }else{
+			  form_.val('layui-form',{
+				  sex:"1"
+			  })
+		  }
+		  var birthday = idcard.substring(6,14);
+		  $("#birthday").val(idcard.substring(6,10)+"-"+idcard.substring(10,12)+"-"+idcard.substring(12,14));
+		 
+	}
+		 
+	String.prototype.trim=function(){
+	　　return this.replace(/(^\s*)|(\s*$)/g, "");
+	}	
+	 
+			    
+</script>
+
+</body>
+
+</html>

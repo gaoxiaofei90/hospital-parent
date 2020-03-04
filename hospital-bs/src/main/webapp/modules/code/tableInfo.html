@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>代码生成</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+	</head>
+	<body>
+
+		<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+			<div class="layui-card-body">
+				<div class="layui-row layui-col-space12">
+					<div class="layui-col-md12">
+						<label class="layui-form-label">表名称</label>
+						<div class="layui-input-block layui-input-title">
+							<input type="text" class="layui-input" id="tableName" name="tableName" disabled></input>
+						</div>
+					</div>
+				</div>
+				<div class="layui-row layui-col-space12" id="columnContainer">
+
+				</div>
+			</div>
+			<button id="LAY-front-submit" style="display: none;" lay-submit="" lay-filter="LAY-front-submit"></button>
+		</div>
+		<script type="text/html" id="columnTmp">
+			{{#  layui.each(d, function(index, item){ }}
+			<div class="layui-form-item" lay-filter="{{item.columnName}}">
+				<label class="layui-form-label layui-form-title" style="width: 150px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.columnName}}</label>
+				<input type="hidden" name="column[{{index}}].columnName" value="{{item.columnName}}">
+					<div class="layui-input-inline">
+						<span>{{item.dataType}}</span>
+					</div>
+					<div class="layui-input-inline" style="width: 150px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+						<span>{{item.columnComment}}</span>
+					</div>
+					<div class="layui-input-inline">
+						<select name="column[{{index}}].showType">
+							<option value="" selected="">显示类型</option>
+							<option value="text" >文本</option>
+							<option value="radio">单选</option>
+							<option value="select">下拉</option>
+							<option value="date">日期</option>
+							<!--<option value="dateTime">时间</option>-->
+						</select>
+					</div>
+					<div class="layui-input-inline">
+						<select name="column[{{index}}].isQuery">
+							<option value="" selected="">是否查询</option>
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+					</div>
+
+					<div class="layui-input-inline">
+						<select name="column[{{index}}].isList">
+							<option value="" selected="">是否列表</option>
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+					</div>
+
+					<div class="layui-input-inline">
+						<select name="column[{{index}}].verify">
+							<option value="" selected="">校验规则</option>
+							<option value="required">必填</option>
+							<option value="number">数字</option>
+						</select>
+					</div>
+
+					<div class="layui-input-inline" >
+						<input type="text" class="layui-input" placeholder="请输入字典名称" name="column[{{index}}].dictName"/>
+					</div>
+
+
+			</div>
+			{{#  }); }}
+		</script>
+		<script src="../../static/layui/layui.js"></script>
+		<script>
+			layui.config({
+				base: '../../static/layui/' //静态资源所在路径
+			}).extend({
+				index: 'modules/index' //主入口模块
+			}).use(['index','form','laytpl'], function() {
+				var $ = layui.$,
+					laytpl = layui.laytpl,
+					form = layui.form;
+
+				var tableName = layui.util.getUrlParam("tableName");
+				if(tableName) {
+				    $("#tableName").val(tableName);
+					//------- 设置修改页面的属性值   ------
+					layui.util.ajax({
+						url: "./../../medical/code/info.jspx?tableName=" + tableName,
+						success: function(res) {
+							if(res.respData) {
+                                var objs= $(laytpl(columnTmp.innerHTML).render(res.respData.list));
+								$("#columnContainer").append(objs);
+                                form.render();
+								form.render('select');
+							}
+						}
+					});
+				}
+			})
+		</script>
+	</body>
+
+</html>

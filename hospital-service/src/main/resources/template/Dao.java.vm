@@ -1,0 +1,15 @@
+package ${package}.${moduleName}.ds.mapper;
+
+import ${package}.${moduleName}.ds.entity.${className};
+import com.jcl.orm.tkmapper.BaseMapper;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${className}Dao extends BaseMapper<${className}> {
+	
+}

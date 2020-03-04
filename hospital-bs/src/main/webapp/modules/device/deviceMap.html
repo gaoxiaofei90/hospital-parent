@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>设备分布概况</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../static/layui/css/admin.css" media="all">
+ <style type="text/css">
+	.input-width{
+		display:inline-block;
+		width:150px;
+	}
+	.btn-span-list a{
+		margin:0 5px 0 0;
+	}
+	.btn i{
+		padding : 0 2px;
+	}
+	.attr-left{
+		width: 45%;
+		float: left;
+	}
+	.attr-right{
+		width: 45%;
+		float: left;
+	}
+	.attr-left span{
+		text-align : right;
+		display: inline-block; 
+		width: 80px;
+		margin-right: 5px;
+	}
+	.attr-right span{
+		text-align : right;
+		display: inline-block; 
+		min-width: 80px;
+		margin-right: 5px;
+	}
+	.line-split{
+		height:10px;
+	}
+	.remark {
+	    text-align: right;
+	    display: inline-block;
+	    width: 80px;
+	    margin-right: 5px;
+	}
+	.add-btn-div{
+		width: 55%;
+	    height: 30px;
+	    padding-top: 10px;
+	    margin-bottom: 10px;
+	}
+	.l-text-wrapper{margin-right: 10px;}
+	
+	  .mapDevice {
+		    font-size: 12px;
+		}
+		.mapDevice th {
+		    /* background: #f2f2f2 none repeat scroll 0 0; */
+		    text-align: right;
+		    color: #044063;
+		    width:100px;
+		    padding-right: 10px;
+		
+		}
+		.mapDevice th, .mapDevice td {
+		    border: 0px;
+		    height: 25px;
+		    line-height: 25px;
+		    padding: 5px;
+		}
+		.mapDevice td {
+		    text-align: left;		    
+		    width:150px;
+		}
+		
+		.BMap_cpyCtrl {
+            display: none;
+        }
+ 
+        .anchorBL {
+            display: none;
+        }
+</style>
+</head>
+
+<body>
+	<div class="layui-fluid" style="min-height:900px;margin:0px 5px 5px 5px;">
+		<div id="allmap" style="min-height:1000px;width:100%;">
+		</div>
+	</div>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=TWFoI9FVxM3MK6SOyFmOltwm6VYaiDmh"></script>
+<script src="../../../static/layui/layui.js"></script>
+<script src="../../../static/jquery/jquery.js"></script>
+<script src="../../../static/jquery/jquery-ui.min.js"></script>
+<script type="text/javascript">
+var layer;
+layui.config({
+	base: '../../../static/layui/' //静态资源所在路径
+}).extend({
+	index: 'modules/index'
+}).use(['index', 'form', 'layer'], function() {	
+	var $ = layui.$
+	,laydate = layui.laydate
+	,form = layui.form
+	,layer = layui.layer;
+	
+	search();
+})
+// 百度地图API功能
+	var map = new BMap.Map("allmap");    // 创建Map实例
+	
+	//map.addControl(new BMap.MapTypeControl());   //添加地图类型控件 离线只支持电子地图，卫星/三维不支持
+	map.setCurrentCity("长沙");         
+	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+	map.addControl(new BMap.NavigationControl());   //缩放按钮
+	
+	//var cr = new BMap.CopyrightControl({anchor: BMAP_ANCHOR_TOP_RIGHT});   //设置版权控件位置
+	//map.addControl(cr); //添加版权控件
+	/* var bs = map.getBounds();   //返回地图可视区域
+	cr.addCopyright({id: 1, content: "", bounds: bs});   
+	 */
+	
+	 var plocation;
+	 var pdeviceCode;
+	 var poption="add";
+	 
+	 var layerIndex ;
+	 var addMark;
+
+	/*  map.addEventListener("rightclick", function(e){
+		 layer.close(layerIndex);
+		 map.removeOverlay(addMark);  
+		 
+		 poption="add";
+		 plocation = e.point.lng+","+e.point.lat;
+		 addMark = new BMap.Marker(e.point);
+		 map.addOverlay(addMark);
+		 
+		 
+		 layerIndex = layer.open({
+			    type: 2 ,
+			    title: '添加设备',   //标题
+			    area: ['1000px', '650px'],   //宽高
+			    shade: 0,   //遮罩透明度
+			    //shadeClose:true, 
+			    content:"/ss-devops/page/monitor/monitor_device_map_add.html", 
+			    scrollbar: false
+			});
+	 });  */
+
+
+	var laryLoad;
+	function search() {
+		laryLoad = layer.load(0,{
+			  shade: [0.3,'#000'] //0.1透明度的白色背景
+		});
+		//将标注添加到地图中
+		$.ajax({
+			url : '../../../medical/device/mapData.jspx',
+			type : 'POST',
+			dataType : 'JSON',
+			success : function(json) {
+				 layer.close(laryLoad);
+				
+				var temgpoint = null;
+				var temgpointstring = null;
+				var points = new Array();
+				map.centerAndZoom(new BMap.Point(json.respData.mapLongitude,json.respData.mapLatitude), 14);  // 初始化地图,设置中心点坐标和地图级别
+				
+				if (json && json.respCode == 0 && json.respData.datalist.length > 0) {
+					var data = json.respData.datalist;
+					var deviceCount = json.respData.datalist;
+					var markers = [];
+					var point = null;
+					
+					for (var i = 0; i < data.length; i++) {
+						var deviceCount = data[i].DEVICECOUNT;
+						if(deviceCount == 1){
+							var vCurrentStatus = parseInt(data[i].deviceInfo.netStatus);
+							var deviceName = data[i].deviceInfo.deviceName;
+							var deviceCode = data[i].deviceInfo.deviceCode;
+							var deviceType = data[i].deviceInfo.deviceType;
+							var orgName = data[i].NAME;
+							var createDate = data[i].deviceInfo.createTime;
+							point = new BMap.Point(data[i].LONGITUDE,
+									data[i].LATITUDE);
+							points.push(point);
+							var sContent;
+							var img;
+							var deviceTypeTxt = data[i].deviceInfo.deviceTypeTxt;
+							
+							switch (vCurrentStatus) {
+							case 1:
+								sContent = "在线";
+								img = "normal-";
+								break;
+							case 2:
+								sContent = "离线";
+								img = "offline-";
+								break;
+							case 0:
+								sContent = "离线";
+								img = "offline-";
+								break;
+							}
+							var icon = new BMap.Icon(
+									'../../../static/imgs/'+img+'1.png',
+									new BMap.Size(64, 64));
+							
+							var str = "";
+							(function() {
+								str += "<div class=\"infobox\" style='text-align:center;' >";
+								str += "<table class='mapDevice' lay-filter='table-result-list' width='100%'>";
+								str += "<tr>";
+								str += "<th>设备编号</th>";
+								str += "<td colspan=\"3\">"
+										+ deviceCode + "</td>";
+								str += "</tr>";
+		
+								str += "<tr>";
+								str += "<th>设备名称</th>";
+								str += "<td  colspan=\"3\">"
+										+ deviceName + "</td>";
+								str += "</tr>";
+		
+								str += "<tr>";
+								str += "<th>设备类型</th>";
+								str += "<td  colspan=\"3\">"
+										+ deviceTypeTxt + "</td>";
+								str += "</tr>";
+		
+								str += "<tr>";
+								str += "<th>状态</th>";
+								str += "<td  colspan=\"3\">" + sContent
+										+ "</td>";
+								str += "</tr>";
+		
+								str += "<tr>";
+								str += "<th>创建时间</th>";
+								str += "<td  colspan=\"3\">"
+										+ createDate + "</td>";
+								str += "</tr>";
+								
+								str += "<tr>";
+								str += "<th>所在机构</th>";
+								str += "<td  colspan=\"3\">"
+										+ orgName + "</td>";
+								str += "</tr>";
+		
+								str += "</table>";
+								str +="<button id=\"queryBtn\" onclick='editDevice(\""+deviceCode+"\")' class=\"layui-btn layuiadmin-btn-replys\"><i class=\"layui-icon layui-icon-edit layuiadmin-button-btn\"></i>修改</button>";
+								str +="<button id=\"queryBtn\" onclick='del(\""+deviceCode+"\")' class=\"layui-btn layui-btn-danger layuiadmin-btn-replys\"><i class=\"layui-icon layui-icon-delete layuiadmin-button-btn\"></i>删除</button>";
+								
+								str += "</div>";
+
+								var opts = {
+									width : 300, // 信息窗口宽度
+									height : 300, // 信息窗口高度
+									//title : "设备信息", // 信息窗口标题
+									enableMessage : true
+								//设置允许信息窗发送短息
+								};
+								var marker = new BMap.Marker(point, {
+									icon : icon
+								});
+								var infowindow = new BMap.InfoWindow(
+										str, opts);
+								marker.addEventListener("click",function() {
+										this.openInfoWindow(infowindow);
+								});
+								markers.push(marker);
+							})();
+						}else if(deviceCount == 0 || deviceCount > 1){
+							console.log(data[i]);
+							var orgName = data[i].NAME;
+							var orgId = data[i].ORG_ID;
+							point = new BMap.Point(data[i].LONGITUDE,
+									data[i].LATITUDE);
+							points.push(point);
+							/* var img;
+							if(deviceCount == 0){
+								img = "offline-";
+							}else if(deviceCount > 1){
+								img = "normal-";
+							} */
+							var icon = new BMap.Icon(
+									'../../../static/imgs/normal-10.png',
+									new BMap.Size(64, 64));
+							
+							var str = "";
+							(function() {
+								str += "<div class=\"infobox\" style='text-align:center;' >";
+								str += "<table class='mapDevice' lay-filter='table-result-list' width='100%'>";
+								str += "<tr>";
+								str += "<th>机构名称</th>";
+								str += "<td colspan=\"3\">"
+										+ orgName + "</td>";
+								str += "</tr>";
+		
+								str += "<tr>";
+								str += "<th>设备数量</th>";
+								str += "<td  colspan=\"3\">"
+										+ deviceCount + "</td>";
+								str += "</tr>";
+		
+								if(deviceCount > 1){
+									str += "</table>";
+									 str +="<button id=\"queryBtn\" onclick='deviceTable(\""+orgId+"\")' class=\"layui-btn layuiadmin-btn-replys\"><i class=\"layui-icon layui-icon-edit layuiadmin-button-btn\"></i>设备列表</button>";
+									str += "</div>";
+								}
+
+								var opts = {
+									width : 380, // 信息窗口宽度
+									height : 100, // 信息窗口高度
+									title : "", // 信息窗口标题
+									enableMessage : true
+								//设置允许信息窗发送短息
+								};
+								
+								var marker = new BMap.Marker(point, {
+									icon : icon
+								});
+								var infowindow = new BMap.InfoWindow(
+										str, opts);
+								marker.addEventListener("click",function() {
+										this.openInfoWindow(infowindow);
+								});
+								markers.push(marker);
+							})();
+						}
+					}
+						
+
+					//多条数据处理
+					var infowindow1;
+					if (points.length > 1) {
+						for (var i = 0; i < markers.length; i++) {
+							map.addOverlay(markers[i]);
+						}
+						map.centerAndZoom(points[points.length - 1], 14);
+
+					} else if (points.length == 1) {
+						map.addOverlay(markers[0]);
+						map.centerAndZoom(points[0], 14);
+					}
+
+				}
+			},
+			error : function() {
+				$("#queryBtn").removeAttr("disabled");
+				 layer.close(laryLoad);
+			}
+		});
+	}
+	
+	function deviceTable(orgId){
+		 layerIndex = layer.open({
+			    type: 2 ,
+			    title: '设备列表',   //标题
+			    area: ['1400px', '1400px'],   //宽高
+			    shade: 0,   //遮罩透明度
+			    //shadeClose:true, 
+			    content: './index.html?hospitalId=' + orgId,
+			    //btn: ['取消'],
+			    scrollbar: false,
+			    yes: function(index, layero) {
+               },
+               success: function(layero, index) {
+            	   
+               },
+               end: function () {//无论是确认还是取消，只要层被销毁了，end都会执行，不携带任何参数。layer.open关闭事件
+            	   location.reload();　　//layer.open关闭刷新
+               }
+			});
+	 }
+	
+	 function editDevice(deviceCode){
+		 poption="edit";
+		 pdeviceCode=deviceCode;
+		 layerIndex = layer.open({
+			    type: 2 ,
+			    title: '修改设备',   //标题
+			    area: ['1000px', '650px'],   //宽高
+			    shade: 0,   //遮罩透明度
+			    //shadeClose:true, 
+			    content: './deviceInfo.html?deviceCode=' + deviceCode+"&event=update",
+			    btn: ['确定', '取消'],
+			    scrollbar: false,
+			    yes: function(index, layero) {
+                    var iframeWindow = window['layui-layer-iframe' + index],
+                        submitID = 'LAY-front-submit',
+                        submit = layero.find('iframe').contents().find('#' + submitID);
+
+                    //监听提交
+                    iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                        var field = data.field; //获取提交的字段
+
+                        //提交 Ajax 成功后，静态更新表格中的数据
+                        layui.util.ajax({
+                            url: "../../../medical/device/update.jspx",
+                            data: field,
+                            success: function(res) {
+                            	if(res.respCode == 0){
+                            		layer.msg(res.respMsg);
+                            	}
+                             	setTimeout(function () {
+                            		location.reload();
+                            		//search();
+								},500); 
+                                layer.close(index); //关闭弹层
+                            }
+                        });
+
+                    });
+
+                    submit.trigger('click');
+                },
+                success: function(layero, index) {
+
+                }
+			});
+	 }
+	
+	 function del(deviceCode){
+		 layer.confirm('您确定要删除这个设备吗?',function(){
+				$.ajax({
+					url : '../../../medical/device/delete.jspx',
+					data :{
+						pk : deviceCode
+					},
+					type : 'POST',
+					dataType : 'JSON',
+					success : function(res){
+						if(res.respCode == 0){
+                    		layer.msg(res.respMsg);
+                    	}
+                     	setTimeout(function () {
+                    		location.reload();
+                    		//search();
+						},500); 
+					},
+					error : function(){
+					}
+				});
+			},function(){});
+		}
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+.layui-text h2 {
+	font-size: 16px;
+	line-height: 30px;
+}
+
+.layui-timeline-content {
+	padding-left: 8px;
+	padding-top: 3px;
+	float: left;
+}
+.line-right{
+	margin-right: 8px;
+	border-bottom-right-radius: 3px;
+	border-top-right-radius: 3px;
+}
+.line-left{
+	margin-left: 8px;
+	border-bottom-left-radius: 3px;
+	border-top-left-radius: 3px;
+}
+.layui-timeline-item-sel {
+	position: relative;
+}
+
+.layui-text h1,
+.layui-text h2,
+.layui-text h3 {
+	color: #aaa;
+}
+
+.layui-timeline-item-sel:before {
+	background-color: #1E9FFF;
+}
+
+.layui-timeline li {
+	float: left;
+	position: relative;
+}
+
+.layui-timeline {
+}
+.layui-step-header{
+	display: inline-block;
+}
+.layui-timeline-icon {
+	border-radius: 50%;
+	padding: 4px 8px;
+	color: white;
+	float: left;
+	font-size: 22px;
+	background-color: white;
+	border: 2px solid #999;
+	color: #999;
+}
+
+.line {
+	width: 150px;
+	height: 3px;
+	float: left;
+	background-color: #999;
+	margin-top: 15px;
+	margin-right: 8px;
+	margin-left: 8px;
+}
+.line-sel{
+	width: 50%;
+	background: #1E9FFF;
+	height: 3px;
+}
+.layui-timeline-item-sel .line {
+	background-color: #999;
+}
+.layui-timeline-item-sel .line-sel {
+	background: #1E9FFF;
+}
+
+.layui-timeline-item-sel .layui-timeline-icon {
+	background: #1E9FFF;
+	border: 2px solid #1E9FFF;
+	color: white;
+}
+.layui-step-content{
+	clear: all;
+}
+.layui-step-content div{
+	clear: all;
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>就诊详情</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+	</head>
+	<body>
+
+		<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+			<div class="layui-card-body layui-row layui-col-space10">
+				<input type="hidden" name="medicalId" value=""></input>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">就诊ID</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="medicalId" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">姓名</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="name" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">身份证号码</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="idcard" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">性别</label>
+					<div class="layui-input-block layui-input-title">
+						<select name="sex" llw-dict-code="sex" disabled="disabled">
+                         </select>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">年龄</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="age" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">住院号</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="medicalNo" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">医院名称</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="hospitalName" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">科室名称</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="departName" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">床号</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="bedNo" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">疾病诊断名称</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="diagnosis" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">入院时间</label>
+					<div class="layui-input-inline">
+                   		<input type="text" name="inDate" id="inDate" disabled="disabled" autocomplete="off" class="layui-input" lay-verify="${column.verify}">
+                    </div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">出院时间</label>
+					<div class="layui-input-inline">
+                        <input type="text" name="outDate" id="outDate" disabled="disabled" autocomplete="off" class="layui-input" lay-verify="${column.verify}">
+                    </div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">当前状态</label>
+					<div class="layui-input-block layui-input-title">
+						<select name="status" llw-dict-code="personStatus" disabled="disabled">
+                         </select>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">系统编号</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="sysCode" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">统筹区</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="zoneName" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">险种/业务</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="busiName" disabled="disabled"></input>
+					</div>
+				</div>
+			</div>
+			<button id="LAY-front-submit" style="display: none;" lay-submit="" lay-filter="LAY-front-submit"></button>
+		</div>
+
+		<script src="../../static/layui/layui.js"></script>
+		<script>
+			layui.config({
+				base: '../../static/layui/' //静态资源所在路径
+			}).extend({
+				index: 'modules/index' //主入口模块
+			}).use(['index','form','laydate'], function() {
+				var $ = layui.$
+				,laydate = layui.laydate
+				,form = layui.form;
+																																																	laydate.render({
+					elem: '#inDateStr'
+				});
+																																																															laydate.render({
+					elem: '#outDateStr'
+				});
+				var medicalId = layui.util.getUrlParam("medicalId");
+				if(medicalId) {
+					//------- 设置修改页面的属性值   ------
+					layui.util.ajax({
+						url: "./../../medical/medical/info.jspx?pk=" + medicalId,
+						success: function(res) {
+							if(res.respData) {
+								layui.$("input,select,textarea").each(function() {
+									$(this).val(res.respData[this.name]);
+								});
+								layui.form.render('select');
+							}
+						}
+					});
+				}
+			})
+		</script>
+	</body>
+
+</html>

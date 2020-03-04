@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>医院管理</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/layui/css/admin.css" media="all">
+    <style>
+        .layui-btn-container > .layui-btn-sm {float:right}
+    </style>
+</head>
+<body class="" style="padding: 10px">
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-row">
+                <div class="layui-col-xs4">
+                    <div style="overflow-x: auto;overflow-y: auto;width: 300px; max-height: 600px;">
+                        <div style="background: #f2f2f2;padding: 10px;width: 280px;"
+                             class="llw-navTree" id="llw-navTree"></div>
+                    </div>
+
+                </div>
+                <div class="layui-col-xs8">
+                    <div class="layui-row">
+                        <div class="layui-tab-item layui-show">
+                            <div id="sysOrganizationInfo" class="layui-container layui-form" lay-filter="form1">
+                                <input id="input_orgId" type="hidden" name="orgId">
+                                <div class="layui-row layui-col-space12">
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label layui-form-title" required="true">机构名称</label>
+                                        <div class="layui-input-block layui-input-title">
+                                            <input type="text" name="name" placeholder="请输入" autocomplete="off" maxlength="24" class="layui-input" lay-verify="required">
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label layui-form-title">机构类型</label>
+                                        <div class="layui-input-block layui-input-title">
+                                            <select class="layui-input"  name="orgCategory" id="orgCategory" llw-dict-code="orgCategory" lay-filter="orgCategory"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-row layui-col-space12">
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label layui-form-title">统筹区</label>
+                                        <div class="layui-input-block layui-input-title">
+                                        
+                                        	<!-- 
+                                        	<select  name="zoneCode" lay-filter="zoneCode"  id="zoneCode" placeholder="统筹区"
+                                                     llw-select-key="zoneCode" llw-select-label="zoneName"
+                                                     llw-select-url="../../medical/zone/zoneList.jspx">
+                                            </select>
+                                        	 -->
+                                            <select  name="zoneCode" lay-filter="zoneCode"  id="zoneCode" placeholder="统筹区"
+                                                     llw-select-key="zoneCode" llw-select-label="zoneName">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label layui-form-title">联系电话</label>
+                                        <div class="layui-input-block layui-input-title">
+                                            <input type="text" name="phone" placeholder="请输入" lay-verify="sphone" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-row layui-col-space12" id="group-hidden">
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label layui-form-title">经度</label>
+                                        <div class="layui-input-block layui-input-title">
+                                            <input type="text" name="longitude" placeholder="经度" lay-verify="sangle" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label layui-form-title">纬度</label>
+                                        <div class="layui-input-block layui-input-title">
+                                            <input type="text" name="latitude" placeholder="纬度" lay-verify="sangle" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-row layui-col-space12">
+                                    <div class="layui-col-md6" style="text-align: center;">
+                                        <button id="sysOrganizationSave" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit lay-filter="sysOrganizationSave">
+                                            <i class="layui-icon layui-icon-edit layuiadmin-button-btn"></i>保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-row" style="margin-top: 20px;">
+
+                        <div class="layui-tab">
+                            <ul class="layui-tab-title">
+	                            <!-- 
+		                            <li class="layui-this">关联系统</li>
+	                                <li>用户管理</li>
+	                             -->
+	                             <li class="layui-this" >用户管理</li>
+                            </ul>
+                            <div class="layui-tab-content">
+                            	<!-- 
+	                            	<div class="layui-tab-item layui-show">
+	                                    <table class="layui-hide" id="system-list-table" lay-filter="system-list-table"></table>
+	                                    <script type="text/html" id="systemOperatorTpl">
+	                                        <a class="font-color-btn" lay-event="edit">编辑</a>
+	                                        <a class="font-color-btn" lay-event="del">删除</a>
+	                                    </script>
+	                                </div>
+	                                <div class="layui-tab-item">
+	                                    <table class="layui-hide" id="user-list-table" lay-filter="user-list-table"></table>
+	                                    <script type="text/html" id="operatorTpl">
+	                                        <a class="font-color-btn" lay-event="edit">编辑</a>
+	                                        {{# if(d.isAdmin != 1) { }}
+	                                            <a class="font-color-btn" lay-event="del">删除</a>
+	                                        {{# } }}
+	                                    </script>
+	                                </div>
+                            	 -->
+                                <div class="layui-tab-item layui-show">
+	                                    <table class="layui-hide" id="user-list-table" lay-filter="user-list-table"></table>
+	                                    <script type="text/html" id="operatorTpl">
+	                                        <a class="font-color-btn" lay-event="edit">编辑</a>
+	                                        {{# if(d.isAdmin != 1) { }}
+	                                            <a class="font-color-btn" lay-event="del">删除</a>
+	                                        {{# } }}
+	                                    </script>
+	                            </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="toolbarSystem">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">关联系统</button>
+    </div>
+</script>
+
+<script type="text/html" id="toolbarUser">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加用户</button>
+    </div>
+</script>
+
+<script src="../../static/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '../../static/layui/'
+    }).extend({
+        index: 'modules/index', //主入口模块
+        treeGrid:'treeGrid'
+    }).use(['index','jquery','form','layer','code','admin', 'table','tree','yfnavTree'], function(){
+        var $=layui.jquery;
+        var form = layui.form;
+        var table=layui.table;
+        var navTree = layui.yfnavTree;
+
+        form.on('submit(sysOrganizationSave)', function(data){
+            layui.util.ajax({
+                url:"../../medical/sysOrganization/modify.jspx",
+                data:data.field
+            });
+            return false;
+        });
+
+        form.on('select(orgCategory)',function(data){
+            //医院科室有经纬度
+            if(data.value && (data.value == "3" || data.value == "4" )){
+                $("#group-hidden").css({visibility:"visible"});
+            }else{
+                $("#group-hidden").css({visibility:"hidden"});
+            }
+        });
+
+        navTree.render({
+            elem: "#llw-navTree",
+            url: "../../medical/sysOrganization/orgList.jspx",
+            type: 1,
+            onEvent:function(itemData,event,callback){
+                var choosedOrgId = itemData.orgId;
+                if(event == 'del'){
+                    //操作数据库
+                    layer.confirm('确认要删除吗？', function(index) {
+                        layui.util.ajax({
+                            url: "../../medical/sysOrganization/delete.jspx",
+                            data: {pk:choosedOrgId},
+                            success: function(res) {
+                                layer.close(index);
+                                callback();
+                            }
+                        });
+                    });
+                }else if(event == 'add'){
+                    layer.prompt({title: '请输入机构名称', formType: 0}, function(pass, index){
+                        if(pass && pass.length > 0){
+                            layui.util.ajax({
+                                url: "../../medical/sysOrganization/addChild.jspx",
+                                data: {name:pass,pid:choosedOrgId},
+                                success: function(res) {
+                                    layer.close(index);
+                                    callback();
+                                }
+                            });
+                        }
+                    });
+                }
+            },
+            onSelected: function (itemData) {
+                //<div class="" data-id=""></div>
+                var choosedOrgId = itemData.orgId;
+                layui.util.ajax({
+                    url:"../../medical/sysOrganization/info.jspx",
+                    data:{pk:choosedOrgId},
+                    success:function(result){
+                        var sysOrganization=result.respData;
+                        form.val('form1',sysOrganization);
+                    }
+                });
+
+                var url = "../../medical/sysUser/list.jspx?orgId="+choosedOrgId;
+
+                table.render({
+                    elem: '#user-list-table'
+                    ,url:url
+                    ,toolbar: '#toolbarUser'
+                    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    ,page: true
+                    ,height: 315
+                    ,cols: [[
+                        {field:'username', title: '登录账号'}
+                        ,{field:'name',title: '姓名'}
+                        ,{field:'phone',title: '联系方式'}
+                        ,{fixed: 'right', title:'操作', toolbar: '#operatorTpl', width:250}
+                    ]]
+                });
+
+                //头工具栏事件
+                table.on('toolbar(user-list-table)', function(){
+                    layer.open({
+                        type: 2,
+                        title: '添加用户',
+                        content: './userInfo.html',
+                        maxmin: true,
+                        area: ['800px', '450px'],
+                        btn: ['确定', '取消'],
+                        yes: function(index, layero) {
+                            var iframeWindow = window['layui-layer-iframe' + index],
+                                submitID = 'LAY-front-submit',
+                                submit = layero.find('iframe').contents().find('#' + submitID);
+
+                            //监听提交
+                            iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                                var field = data.field; //获取提交的字段
+                                field.orgId = choosedOrgId;
+                                var roleArr = iframeWindow.getRoleArr();
+                                if(roleArr.length > 0){
+                                    field.roleIds = roleArr.join(',');
+                                }else{
+                                  //  field.roleIds = "";
+                                  layer.msg("请选择角色");
+                                  return;
+                                }
+                                //提交 Ajax 成功后，静态更新表格中的数据
+                                layui.util.ajax({
+                                    url: "../../medical/sysUser/save.jspx",
+                                    data: field,
+                                    success: function(res) {
+                                        table.reload('user-list-table'); //数据刷新
+                                        layer.close(index); //关闭弹层
+                                    }
+                                });
+                                table.reload('user-list-table'); //数据刷新
+                                layer.close(index); //关闭弹层
+                            });
+                            submit.trigger('click');
+                        }
+                    });
+                });
+
+                //监听行工具事件
+                table.on('tool(user-list-table)', function(obj){
+                    var data = obj.data;
+                    if(obj.event == 'del'){
+                        layer.confirm('确认要删除吗？', function(index) {
+                            layui.util.ajax({
+                                url: "../../medical/sysUser/delete.jspx",
+                                data: {pk:data.userId},
+                                success: function(res) {
+                                    layer.close(index);
+                                    table.reload('user-list-table');
+                                }
+                            });
+                        });
+                    }else if(obj.event == 'edit'){
+                        layer.open({
+                            type: 2,
+                            title: '修改用户',
+                            content: './userInfo.html?userId='+data.userId,
+                            area: ['800px', '450px'],
+                            btn: ['确定', '取消'],
+                            yes: function(index, layero) {
+                                var iframeWindow = window['layui-layer-iframe' + index],
+                                    submitID = 'LAY-front-submit',
+                                    submit = layero.find('iframe').contents().find('#' + submitID);
+
+                                //监听提交
+                                iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                                    var field = data.field; //获取提交的字段
+                                    var roleArr = iframeWindow.getRoleArr();
+                                    if(roleArr.length > 0){
+                                        field.roleIds = roleArr.join(',');
+                                    }else{
+                                       // field.roleIds = "";
+                                        layer.msg("请选择角色");
+                                  		return;
+                                    }
+                                    //提交 Ajax 成功后，静态更新表格中的数据
+                                    layui.util.ajax({
+                                        url: "../../medical/sysUser/update.jspx",
+                                        data: field,
+                                        success: function(res) {
+                                            table.reload('user-list-table'); //数据刷新
+                                            layer.close(index); //关闭弹层
+                                        }
+                                    });
+                                    table.reload('user-list-table'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                });
+                                submit.trigger('click');
+                            }
+                        });
+                    }
+                });
+
+                /*
+                var url2 = "../../medical/sysOrganization/system/list.jspx?pk="+choosedOrgId;
+                table.render({
+                    elem: '#system-list-table'
+                    ,url:url2
+                    ,toolbar: '#toolbarSystem'
+                    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    ,page: false
+                    ,height: 315
+                    ,cols: [[
+                        {field:'sysCode',title: '系统编号'}
+                        ,{field:'sysName', title: '系统名称'}
+                        ,{field:'busiTypeLabels',title: '业务类型'}
+                        ,{fixed: 'right', title:'操作', toolbar: '#systemOperatorTpl', width:250}
+                    ]]
+                });
+                */
+
+                //头工具栏事件
+                table.on('toolbar(system-list-table)', function(){
+                    layer.open({
+                        type: 2,
+                        title: '关联系统',
+                        content: './systemInfo.html',
+                        area: ['500px', '450px'],
+                        btn: ['确定', '取消'],
+                        yes: function(index, layero) {
+                            var iframeWindow = window['layui-layer-iframe' + index],
+                                submitID = 'LAY-front-submit',
+                                submit = layero.find('iframe').contents().find('#' + submitID);
+
+                            //监听提交
+                            iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                                var field = data.field; //获取提交的字段
+                                field.orgId = choosedOrgId;
+                                var busiTypes = iframeWindow.getBusiTypeArr();
+                                if(busiTypes.length > 0){
+                                    field.busiTypes = busiTypes.join(',');
+                                }else{
+                                    field.busiTypes = "";
+                                }
+                                //提交 Ajax 成功后，静态更新表格中的数据
+                                layui.util.ajax({
+                                    url: "../../medical/sysOrganization/system/add.jspx",
+                                    data: field,
+                                    success: function(res) {
+                                        table.reload('system-list-table'); //数据刷新
+                                        layer.close(index); //关闭弹层
+                                    }
+                                });
+                                table.reload('system-list-table'); //数据刷新
+                                layer.close(index); //关闭弹层
+                            });
+                            submit.trigger('click');
+                        }
+                    });
+                });
+
+                //监听行工具事件
+                table.on('tool(system-list-table)', function(obj){
+                    var data = obj.data;
+                    if(obj.event == 'del'){
+                        layer.confirm('确认要删除吗？', function(index) {
+                            layui.util.ajax({
+                                url: "../../medical/sysOrganization/system/delete.jspx",
+                                data: {orgSysId:data.orgSysId},
+                                success: function(res) {
+                                    layer.close(index);
+                                    table.reload('system-list-table');
+                                }
+                            });
+                        });
+                    }else if(obj.event == 'edit'){
+                        layer.open({
+                            type: 2,
+                            title: '修改关联系统',
+                            content: './systemInfo.html?pk='+data.orgSysId+"&sysName="+escape(data.sysName),
+                            area: ['500px', '450px'],
+                            btn: ['确定', '取消'],
+                            yes: function(index, layero) {
+                                var iframeWindow = window['layui-layer-iframe' + index],
+                                    submitID = 'LAY-front-submit',
+                                    submit = layero.find('iframe').contents().find('#' + submitID);
+
+                                //监听提交
+                                iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                                    var field = data.field; //获取提交的字段
+                                    var busiTypes = iframeWindow.getBusiTypeArr();
+                                    if(busiTypes.length > 0){
+                                        field.busiTypes = busiTypes.join(',');
+                                    }else{
+                                        field.busiTypes = "";
+                                    }
+                                    //提交 Ajax 成功后，静态更新表格中的数据
+                                    layui.util.ajax({
+                                        url: "../../medical/sysOrganization/system/update.jspx",
+                                        data: field,
+                                        success: function(res) {
+                                            table.reload('system-list-table'); //数据刷新
+                                            layer.close(index); //关闭弹层
+                                        }
+                                    });
+                                    table.reload('system-list-table'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                });
+                                submit.trigger('click');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

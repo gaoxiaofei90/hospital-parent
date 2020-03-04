@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>完成人员分析</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/layui/css/admin.css" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form">
+            <div class="layui-card-body">
+                <div style="border-bottom: 1px solid #DDDDDD;margin: 10px 0px;">
+                    <div class="layui-card-head">查询<span class="layui-font-auxi">&nbsp;</span>
+                    </div>
+                    <div class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item layui-form" style="margin-top: 7px;">
+                            <div class="layui-item-lemo">
+								<div class="layui-inline">
+                                    <label class="layui-title-lable">统筹区</label>
+                                   <div class="layui-input-block layui-input-title">
+                                        <select  name="zoneCode" lay-filter="zoneCode"  id="zoneCode"
+                                                 llw-select-key="zoneCode" llw-select-label="zoneName">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-title-lable">业务类型</label>
+	                                <div class="layui-select-mete">
+                                        <select  name="busiType" lay-filter="busiType" id="busiType"
+                                                 llw-select-key="busiType" llw-select-label="busiName" >
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-title-lable">统计年月</label>
+                                    <div class="layui-select-mete">
+                                         <select name="statisticalTime" lay-filter="statisticalTime" id="statisticalTime">
+                                        </select>
+                                    </div>
+                                </div>
+                                 <div class="layui-inline">
+                                    <label class="layui-title-lable">完成率</label>
+	                                <div class="layui-select-mete">
+                                       <select name="finashRateValue" lay-filter="finashRateValue">
+                                         	<option value="0" selected="selected">全部</option>
+                                         	<option value="95">完成率 ≥ 95%</option>
+                                         	<option value="90">完成率 ≥ 90%</option>
+                                         	<option value="85">完成率 ≥ 85%</option>
+                                         	<option value="80">完成率 ≥ 80%</option>
+                                         	<option value="70">完成率 ≥ 70%</option>
+                                         	<option value="60">完成率 ≥ 60%</option>
+                                         	<option value="-60">完成率＜60%</option>
+                                         	<option value="-50">完成率＜50%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" style="margin-top: 7px;">
+                                <div class="layui-item-lemo">
+                                    <div class="layui-inline">
+                                        <button class="layui-btn layui-btn-normal" lay-submit  lay-filter="LAY-user-front-search">
+                                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                                        </button>
+                                        <a class="layui-btn layui-btn-normal" id="cleanBtn">
+                                            重置
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <table class="layui-table" lay-data="{ url:'../../medical/suspiciousPersonStatistics/list.jspx', page:true, id:'table-result-list'}" lay-filter="table-result-list" id="rtable">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'name' , width: 120}">姓名</th>
+                        <th lay-data="{field:'idcard' , width: 160}">身份证</th>
+                        <th lay-data="{field:'age' , width: 80}">年龄</th>
+                        <th lay-data="{field:'hospitalName', width: 160}">医院名称</th>
+                        <th lay-data="{field:'departName', width: 160}">科室</th>
+                        <th lay-data="{field:'medicalNo', width: 160}">住院号</th>
+                        <th lay-data="{field:'hospitalAmount', width: 108}">本期住院人次</th>
+                        <th lay-data="{field:'checkAmount', width: 108}">本期抽查次数</th>
+                        <th lay-data="{field:'checkPerson', width: 90}">抽查人次</th>
+                        <th lay-data="{field:'faceAmount', width: 108}">人脸识别人次</th>
+                        <th lay-data="{field:'outAmount', width: 108}">离床登记人次</th>
+                        <th lay-data="{field:'videoAmount', width: 108}">特殊人员人次</th>
+                        <th lay-data="{field:'notRecogAmount', width: 108}">未认证人次</th>
+                        <th lay-data="{field:'notPassAmount', width: 120}">认证未通过人次</th>
+                        <th lay-data="{field:'passAmount', width: 120}">认证通过人次</th>
+                        <th lay-data="{field:'outHospitalAmount', width: 120}">已出院人数</th>
+                        <th lay-data="{field:'finashRate', width: 90}">完成率</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../static/layui/layui.js"></script>
+<script src="../../static/jquery/jquery.js"></script>
+<script>
+    layui.config({
+        base: '../../static/layui/' //静态资源所在路径
+    }).extend({
+        index: 'modules/index' //主入口模块
+    }).use(['index', 'table','laydate','admin','code','laytpl','llw_treeSelect'], function() {
+        var $ = layui.$,
+            form = layui.form,
+            admin = layui.admin,
+            laydate = layui.laydate,
+            laytpl = layui.laytpl,
+            table = layui.table;
+            //开始日期
+            var insStart = laydate.render({
+                elem: '#test-laydate-start'
+                ,type: 'date'
+                ,done: function(value, date){
+                    //更新结束日期的最小日期
+                    insEnd.config.min = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+
+                    //自动弹出结束日期的选择器
+                    insEnd.config.elem[0].focus();
+                }
+            });
+
+            //结束日期
+            var insEnd = laydate.render({
+                elem: '#test-laydate-end'
+                ,type: 'date'
+                ,done: function(value, date){
+                    //更新开始日期的最大日期
+                     insStart.config.max = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+                }
+            });
+
+        //监听搜索
+        form.on('submit(LAY-user-front-search)', function(data) {
+            var field = data.field;
+            field.beginDate=$('#test-laydate-start').val();
+            if(field.beginDate && field.beginDate.length > 0)
+            {
+                field.beginDate = field.beginDate + " 00:00:00";
+            }
+            field.endDate=$('#test-laydate-end').val();
+            if(field.endDate && field.endDate.length > 0)
+            {
+                field.endDate = field.endDate + " 23:59:59";
+            }
+            //执行重载
+            table.reload('table-result-list', {
+                page: {
+                    curr: 1
+                },
+                where: field
+            });
+        });
+
+        var zoneCodeInit ;
+        var busiTypeInit ;
+        var monthInit ;
+        function getZoneCodeList(){
+        	$.ajax({
+                  type:'get',
+                  url: "../../medical/zone/userZoneList.jspx",
+                  success:function(data){
+                	  if(data != undefined && data != null && data != ""){
+                          var html="";
+                          var dataList = data.respData;
+                          for(var i = 0 ;i < dataList.length ; i++){
+                        	  if(i==0){
+                        		  zoneCodeInit = dataList[i].zoneCode;
+                        		  html+="<option value="+dataList[i].zoneCode+" selected='selected'>"+dataList[i].zoneName+"</option>";
+                        	  }else{
+                        		  html+="<option value="+dataList[i].zoneCode+">"+dataList[i].zoneName+"</option>";
+                        	  }
+                        	  
+                          }
+                          $("#zoneCode").append(html);
+                      }
+                     form.render('select');
+                 }
+             })
+        }
+        function getBusiTypeList(){
+        	$.ajax({
+                  type:'get',
+                  url: "../../medical/business/userBusiList.jspx",
+                  success:function(data){
+                	  if(data != undefined && data != null && data != ""){
+                          var html="";
+                          var dataList = data.respData;
+                          for(var i = 0 ;i < dataList.length ; i++){
+                        	  if(i==0){
+                        		  busiTypeInit = dataList[i].busiType;
+                        		  html+="<option value="+dataList[i].busiType+" selected='selected'>"+dataList[i].busiName+"</option>";
+                        	  }else{
+                        		  html+="<option value="+dataList[i].busiType+">"+dataList[i].busiName+"</option>";
+                        	  }
+                        	  
+                          }
+                          $("#busiType").append(html);
+                      }
+                     form.render('select');
+                 }
+             })
+        }
+        
+        $(document).ready(function () {
+        	let monthList = getMonthData();
+        	if(monthList!=undefined&&monthList!=null&&monthList!=""){
+                var html="";
+                    for(var i=0;i<monthList.length;i++){
+                    	html+="<option value="+monthList[i]+">"+monthList[i]+"</option>";
+                     }
+                       $("#statisticalTime").append(html);
+            }
+            //重新渲染select
+            form.render('select');
+            getZoneCodeList();
+            getBusiTypeList();
+            $("#cleanBtn").click(function(){
+            	var queryCriteriaMore = $(".layui-inline");
+            	queryCriteriaMore.find("select").siblings("div.layui-form-select").find("dd:first").click();
+            });
+        });
+    });
+    
+    function getMonthData(){
+    	let datelist = []
+        let date = new Date()
+        let Y = date.getFullYear()
+        let M = date.getMonth()+1
+        for (let i = 0; i < 6; i++) {
+          let dateoption = ''
+          if (M - 1 !== 0) {
+          } else {
+            M = 12
+            Y = Y - 1
+          }
+          let m = M
+          m = m < 10 ? '0' + m : m
+          dateoption = Y + '-' + m
+          M--
+          datelist.push(dateoption)
+        }
+        return datelist;
+    }
+    
+    
+  
+    
+</script>
+</body>
+</html>

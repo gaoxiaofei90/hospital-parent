@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>抽查管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/layui/css/admin.css" media="all">
+    <style>
+   
+	.mandatory:before{
+	    color:#FF5858;
+	    content:"✱";
+	} 
+    </style>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form">
+            <div class="layui-card-body">
+                <div style="border-bottom: 1px solid #DDDDDD;margin: 10px 0px;">
+                    <div class="layui-card-head">查询<span class="layui-font-auxi">&nbsp;</span>
+                    </div>
+                    <div class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item layui-form" style="margin-top: 7px;">
+                            <div class="layui-item-lemo">
+                               <div class="layui-inline" >
+                                    <label class="layui-title-lable ">抽查方式</label>
+                                     <div class="layui-select-mete" style="width: 100px;">
+	                                    <select name="samplingType" llw-dict-code="samplingType" >
+	                                     </select>
+                                     </div>
+                                </div> 
+                               <div class="layui-inline">
+                                    <label class="layui-title-lable">当前状态</label>
+                                    <div class="layui-select-mete" style="width: 100px;">
+                                        <select name="status" llw-dict-code="samplingStatus">
+                                        </select>
+                                     </div>
+                                </div>
+                                  <div class="layui-inline" style="min-width: 300px;">
+                                    <label class="layui-title-lable">制单时间</label>
+                                    <div class="layui-select-mete">
+                                        <div class="layui-input-inline" style="width: 100px;">
+                                            <input type="text" id="test-laydate-start"  lay-filter="beginDate" class="layui-input" name="beginDate" placeholder="yyyy-MM-dd">
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 20px;margin-right: 0;height: 32px;line-height: 32px;">
+                                            ~
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 100px;">
+                                            <input type="text" id="test-laydate-end" name="endDate" lay-filter="endDate" class="layui-input" placeholder="yyyy-MM-dd">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                 		<button class="layui-btn layui-btn-normal" lay-submit  lay-filter="LAY-user-front-search">
+                                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                                        </button>
+                                        <a class="layui-btn layui-btn-normal llw-reset" lay-submit="" lay-filter="LAY-app-reset" id="clean">
+                                           	 重置
+                                        </a>
+
+                            </div>
+
+                        </div>
+
+						<div class="layui-form-item layui-form" style="margin-top: 7px;">
+                            <div class="layui-item-lemo">
+
+								<button class="layui-btn layui-btn-normal" onclick="toSampling(1)">按医院抽查</button> 
+                            	<button class="layui-btn layui-btn-normal" onclick="toSampling(2)">按科室抽查</button>
+                            	<button class="layui-btn layui-btn-normal" onclick="toSampling(3)">按指定病人抽查</button>
+                        	</div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="layui-table" id="sampling-table-result-list"  lay-filter="sampling-table-result-list">
+                </table>
+                
+                <script type="text/html" id="operatorTpl">
+					{{#  if(d.status == 1){ }}
+   						 	<a  class="font-color-btn" lay-event="issue">下发</a>
+                    		<a  class="font-color-btn" lay-event="edit">修改</a>
+                   			<a  class="font-color-btn" lay-event="del">删除</a>
+ 							<a  class="font-color-btn" lay-event="view">详情</a>
+ 					{{#  } else { }}
+    						<a  class="font-color-btn" lay-event="view">详情</a>
+  					{{#  } }}
+
+				
+                </script>
+               <script type="text/html" id="barRate">
+
+				{{#  if(d.samplingType == 1 || d.samplingType == 2){ }}
+   					 {{d.checkRate}}%
+ 				{{#  } else { }}
+    				{{d.checkAmount}}人
+  				{{#  } }}
+
+            </script> 
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../static/layui/layui.js"></script>
+<script>
+var checkedData = [];
+var checkedDepartmentData = [];
+var checkedPersonData = [];
+var test="aaa";
+var form, admin ,table;
+     layui.config({
+        base: '../../static/layui/' //静态资源所在路径
+    }).extend({
+        index: 'modules/index' //主入口模块
+    }).use(['index', 'table','laydate','admin','code','laytpl','llw_treeSelect'], function() {
+        var $ = layui.$,
+            laydate = layui.laydate,
+            laytpl = layui.laytpl
+           ;
+             form = layui.form;
+             admin = layui.admin;
+             table = layui.table;
+            form.on('submit(sysOrganizationSave)', function(data){
+            	console.log(JSON.stringify(data.field));
+            });
+            //开始日期
+            var insStart = laydate.render({
+                elem: '#test-laydate-start'
+                ,type: 'datetime'
+                ,done: function(value, date){
+                    //更新结束日期的最小日期
+                    insEnd.config.min = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+
+                    //自动弹出结束日期的选择器
+                    insEnd.config.elem[0].focus();
+                }
+            });
+
+          
+           //结束日期
+            var insEnd = laydate.render({
+                elem: '#test-laydate-end'
+                ,type: 'datetime'
+                ,done: function(value, date){
+                    //更新开始日期的最大日期
+                     insStart.config.max = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+                }
+            });
+
+ 			var samplingtable = table.render({
+				    elem: '#sampling-table-result-list'
+				    ,height: 500
+				    ,url: '../../medical/sampling/list.jspx'
+				    ,page: true //开启分页
+				    ,cols:[[ //表头
+					      {field: 'samplingId', title: 'samplingId', hide:true}
+					      ,{field: 'samplingBatch', title: '抽查批次',  align:'center',width:160, sort: true}
+					      ,{field: 'samplingName', title: '抽样名称',align:'center',width:150}
+					      ,{field: 'samplingTypeName', title: '抽查方式',align:'center', width:110}
+					      ,{templet: '<div>{{ layui.util.toDateString(d.startTime,"yyyy-MM-dd HH:mm") }} -- {{layui.util.toDateString(d.finishTime,"yyyy-MM-dd HH:mm")}}</div>' ,align:'center',title: '抽查时间', width:260}
+					      ,{toolbar: '#barRate', title: '抽查比例/人数', align:'center',width:110}
+					      ,{field: 'samplingStatusName', title: '当前状态', align:'center',width:80}
+					      ,{title: '操作', width: 200, align:'center', fixed: 'right', toolbar: '#operatorTpl'}
+					    ]]
+			  	});
+  
+    	table.on('tool(sampling-table-result-list)', function(obj) {
+            var data = obj.data;
+            console.log("---data--"+JSON.stringify(data));
+            if(obj.event === 'issue') {
+                //----- 弹出修改订单窗口----
+                 layer.open({
+			        type: 1
+			        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			        ,id: 'layerDemo1' //防止重复弹出
+			        ,content: '<div style="padding: 20px 100px;">确定下发？</div>'
+			        ,btn: ['确定', '取消']
+			        ,btnAlign: 'c' //按钮居中
+			        ,shade: 0 //不显示遮罩
+			        ,yes: function(){
+			         	 	layui.util.ajax({
+                                url: "../../medical/sampling/issue.jspx?samplingId="+data.samplingId,
+                               // data: field,
+                                success: function(res) {
+                                 	table.reload('sampling-table-result-list'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                }
+                            }); 
+			          layer.closeAll();
+			        }
+			      });
+                //-----  结束  ------
+            }else if(obj.event === 'del') {
+                //----- 弹出修改订单窗口----
+                 layer.open({
+			        type: 1
+			        ,offset: "auto" //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+			        ,id: 'layerDemo2' //防止重复弹出
+			        ,content: '<div style="padding: 20px 100px;">确定删除抽样计划？</div>'
+			        ,btn: ['确定', '取消']
+			        ,btnAlign: 'c' //按钮居中
+			        ,shade: 0 //不显示遮罩
+			        ,yes: function(){
+			         	 	layui.util.ajax({
+                                url: "../../medical/sampling/delete.jspx?samplingId="+data.samplingId,
+                                data: {pk:data.samplingId},
+                                success: function(res) {
+                                 	table.reload('sampling-table-result-list'); //数据刷新
+                                   // layer.close(index); //关闭弹层
+                                }
+                            }); 
+			          layer.closeAll();
+			        }
+			      });
+            }else if(obj.event === 'edit' || obj.event === 'view') {
+	            var samplingType = data.samplingType;
+	            var btn = [];
+	            if(obj.event === 'edit'){
+	            	btn =['确定', '取消'];
+	            }
+	            
+	            var title = "";
+	            var alertMsg = "";
+	            var updateUrl = "";
+	            if(samplingType == 1){
+            		title = "编辑医院";
+            		alertMsg ="请选择医院";
+            		updateUrl = "../../medical/sampling/updateHospital.jspx";
+	            }else if(samplingType == 2){
+	            	title = "编辑科室";
+	            	alertMsg ="请选择科室";
+	            	updateUrl = "../../medical/sampling/updateDepartment.jspx";
+	            }else{
+	            	title = "编辑病人";
+	            	alertMsg ="请选择需抽查的人员";
+	            	updateUrl = "../../medical/sampling/updatePatient.jspx";
+	            }
+               var index = layer.open({
+                    type: 2,
+                    title: title,
+                    content: './sampling.html?samplingId='+data.samplingId+"&event="+obj.event+"&samplingType="+samplingType,
+                    maxmin: true,
+                    area: ['1200px', '1000px'],
+                    btn: btn,
+                    yes: function(index, layero) {
+                        var iframeWindow = window['layui-layer-iframe' + index],
+                            submitID = 'LAY-front-submit',
+                            submit = layero.find('iframe').contents().find('#' + submitID);
+                        //监听提交
+                            iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                            console.log(JSON.stringify(data.field));
+                            var field = data.field; //获取提交的字段
+                            
+                            if(checkedData.length < 1){
+	                            layer.msg(alertMsg, {icon: 5});
+	                            return;
+                            }
+                            
+                            if(Date.parse(field['startTime']) >= Date.parse(field['finishTime'])){
+                            	 layer.msg("抽查开始时间要小于结束时间", {icon: 5});
+                            	 return;
+                            }
+                           
+                            field['startTime']=field['startTime']+":00.0";
+                            field['finishTime']=field['finishTime']+":00.0";
+                            
+                            console.log("-----"+JSON.stringify(checkedData));
+                            if(samplingType == 1){
+                            	field['hospitals'] = checkedData;
+                            }else if(samplingType == 2){
+                            	field['departments'] = checkedData;
+                            }else{
+                            	field['patients'] = checkedData;
+                            }
+                            console.log("修改提交："+JSON.stringify(field));
+                            layui.util.ajax({
+                                url: updateUrl,
+                                contentType: "application/json",
+                                type: 'POST',
+                                data: JSON.stringify(field),
+                                success: function(res) {
+                                	//病人抽查修改有重复时需要提示
+	                                if(res.respData == 500){
+	                                	 layer.msg(res.respMsg, {
+									        time: 10000, //20s后自动关闭
+									        btn: ['确定']
+									      });
+									      return;
+	                                }
+                                    table.reload('sampling-table-result-list'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                }
+                            });
+                        });
+                        submit.trigger('click');
+                    }
+                });	  
+                layer.full(index);              
+            }
+        });
+        
+
+  		//监听搜索
+        form.on('submit(LAY-user-front-search)', function(data) {
+            var field = data.field;
+            console.log("--搜索---"+JSON.stringify(field));
+            field.beginDate=$('#test-laydate-start').val();
+            if(field.beginDate && field.beginDate.length > 0)
+            {
+                field.beginDate = field.beginDate + " 00:00:00";
+            }
+            field.endDate=$('#test-laydate-end').val();
+            if(field.endDate && field.endDate.length > 0)
+            {
+                field.endDate = field.endDate + " 23:59:59";
+            }
+            //执行重载
+            table.reload('sampling-table-result-list', {
+                page: {
+                    curr: 1
+                },
+                where: field
+            });
+        });
+        $('.layui-btn.layui-btn-normal').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        
+    }); 
+    
+     function toSampling(samplingType){
+     		 checkedData = [];
+     		 var title = "添加医院";
+     		 var alertMsg = "请选择医院";
+     		 var submitUrl = "../../medical/sampling/save.jspx";
+             if(samplingType == 1){
+             	title = "添加医院";
+             }else if(samplingType == 2){
+             	title = "添加科室";
+             	alertMsg ="请选择科室";
+                submitUrl ="../../medical/sampling/saveDepartment.jspx";
+             }else{
+             	title = "添加病人";
+             	alertMsg ="请选择需抽查的人员";
+             	submitUrl ="../../medical/sampling/savePatient.jspx";
+             }
+     	     var index = layer.open({
+                    type: 2,
+                    title: title,
+                    content: './sampling.html?samplingType='+samplingType+"&samplingId=0",
+                  //content: './departmentSampling.html',
+                    maxmin: true,
+                    area: ['1200px', '1000px'],
+                    btn: ['确定', '取消'],
+                    yes: function(index, layero) {
+                        var iframeWindow = window['layui-layer-iframe' + index],
+                            submitID = 'LAY-front-submit',
+                            submit = layero.find('iframe').contents().find('#' + submitID);
+                            //监听提交
+                            iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                            if(checkedData.length < 1){
+	                            layer.msg(alertMsg, {icon: 5});
+	                            return;
+                            }
+                            
+                            console.log(JSON.stringify(data.field));
+                            var field = data.field; //获取提交的字段
+                            if(Date.parse(field['startTime']) >= Date.parse(field['finishTime'])){
+                            	 layer.msg("抽查开始时间要小于结束时间", {icon: 5});
+                            	 return;
+                            }
+                            
+                            console.log("-----"+JSON.stringify(checkedData));
+                            if(samplingType == 1){
+                            	field['hospitals'] = checkedData;
+                            }else if(samplingType == 2){
+                            	field['departments'] = checkedData;
+                            }else{
+                            	field['patients'] = checkedData;
+                            } 
+                            field['startTime']=field['startTime']+":00.0";
+                            field['finishTime']=field['finishTime']+":00.0";
+                            
+                            console.log("抽样数据---"+JSON.stringify(field));
+                            layui.util.ajax({
+                                url: submitUrl,
+                                contentType: "application/json",
+                                type: 'POST',
+                                data: JSON.stringify(field),
+                                success: function(res) {
+                                var datas = JSON.stringify(res);
+                                console.log("---添加响应---"+JSON.stringify(res));
+                                if(res.respData == 500){
+                                	 layer.msg(res.respMsg, {
+								        time: 10000, //20s后自动关闭
+								        btn: ['确定']
+								      });
+								      return;
+                                }
+                                    table.reload('sampling-table-result-list'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                }
+                            });
+                        });
+                        submit.trigger('click');
+                    }
+                });
+                layer.full(index);
+     }	
+</script>
+</body>
+</html>

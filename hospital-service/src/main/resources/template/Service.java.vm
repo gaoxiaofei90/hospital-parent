@@ -1,0 +1,16 @@
+package ${package}.${moduleName}.api;
+
+import com.jcl.orm.tkmapper.BaseDtoExtendService;
+import ${package}.${moduleName}.dto.${className}Dto;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${className}Service extends BaseDtoExtendService<${className}Dto> {
+
+}
+

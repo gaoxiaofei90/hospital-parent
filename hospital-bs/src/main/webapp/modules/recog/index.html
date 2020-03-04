@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>医院端---在院人员</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/layui/css/admin.css" media="all">
+     <style type="text/css">
+    	#outDate .layui-laydate-main{width:308px;height: 290px;}
+        {# 设置table每一行的height #}
+        .layui-table-cell {
+		    font-size:14px;
+		    padding:0 5px;
+		    height:auto;
+		    overflow:visible;
+		    text-overflow:inherit;
+		    white-space:normal;
+		    word-break: break-all;
+		}
+    </style>
+</head>
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form">
+            <div class="layui-card-body">
+                <div style="border-bottom: 1px solid #DDDDDD;margin: 10px 0px;">
+                    <div class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item layui-form" style="margin-top: 7px;">
+                        	<div class="layui-item-lemo" style="display: none">
+                            		<div class="layui-inline">
+                                        <label class="layui-title-lable">医院/科室名称:</label>
+	                                    <div class="layui-select-mete">
+	                                     	<label class="layui-title-lable"><p id="hospitalNameTmp" style="color:#5FB878;"></p></label>
+	                                    </div>
+                                    </div>
+                            </div>
+                            <div class="layui-item-lemo">
+                            		
+                            		<div class="layui-inline">
+                                        <label class="layui-title-lable">关键字</label>
+	                                    <div class="layui-select-mete" style="width:240px;">
+	                                       <input type="text" id="keyword" name="keyword" placeholder="输入姓名/住院号/床号/科室" autocomplete="off" class="layui-input" style="width: 200px;">
+	                                    </div>
+                                    </div>
+                                    <!--
+                                    <div class="layui-inline" id="departNameDiv">
+                                    	<label class="layui-title-lable">科室</label>
+	                                    <div class="layui-select-mete" style="width:140px;">
+	                                        <select type="text" name="departName" id="departName" lay-filter='departNameFilter'>
+										   </select>
+	                                    </div>
+                                    </div>
+                                      -->
+                                    <div class="layui-inline">
+                                    	<label class="layui-title-lable">认证状态</label>
+	                                    <div class="layui-select-mete" style="width:200px;">
+	                                        <select type="text" name="recogResult" lay-filter='recogResultFilter'>
+	                                        	<option value="">全部</option>
+	                                        	<!-- 
+	                                        	<option value="10">未认证</option>
+											  	<option value="11">认证成功</option>
+											  	<option value="12">认证失败</option>
+	                                        	 -->
+										   		<option value="0">未认证</option>
+											  	<option value="1">认证成功</option>
+											  	<option value="2">认证失败</option>
+										   </select>
+	                                    </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                    	<label class="layui-title-lable">参保地</label>
+	                                    <div class="layui-select-mete" style="width:200px;">
+	                                        <select type="text" name="personFrom" lay-filter='personFromFilter'>
+	                                        	<option value="">请选择</option>
+										   		<option value="1">本省</option>
+											  	<option value="2">本市</option>
+											  	<option value="3">省本级</option>
+											  	<option value="4">外省</option>
+										   </select>
+	                                    </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                    	<label class="layui-title-lable">参保险种</label>
+	                                    <div class="layui-select-mete" style="width:200px;">
+	                                        <select type="text" name="busiType" lay-filter='busiTypeFilter'>
+	                                        	<option value="">请选择</option><!-- 310职工医保、390居民医保 -->
+										   		<option value="310">城镇职工医保</option>
+											  	<option value="390">城乡居民医保</option>
+										   </select>
+	                                    </div>
+                                    </div>
+                            	</div>
+                            	<div class="layui-item-lemo">
+                            		 
+                                    <div class="layui-inline" style="min-width:510px;">
+                                    	<label class="layui-title-lable">入院时间</label>
+										<div class="layui-select-mete">
+											<div class="layui-input-inline" style="width: 250px;">
+												<input type="text" id="test-laydate-start"
+													   lay-filter="test-laydate-start" class="layui-input"
+													   placeholder="yyyy-MM-dd" autocomplete="off" name = "startTime">
+											</div>
+											<div class="layui-input-inline" style="width: 10px;margin-right: 0;height: 32px;line-height: 32px;">
+	                                            ~
+	                                        </div>
+											<div class="layui-input-inline" style="width: 250px;">
+												<input type="text" id="test-laydate-end" lay-filter="test-laydate-end"
+													   class="layui-input" placeholder="yyyy-MM-dd" autocomplete="off" name = "endTime">
+											</div>
+										</div>
+									</div>
+									<div class="layui-inline" >
+                                        <a class="layui-btn layui-btn-normal llw-reset" lay-submit="" lay-filter="LAY-app-reset" id="cleanContext" data-type="cleanContext">
+                                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>重置
+                                        </a>
+                                	</div>
+                                	<div class="layui-inline" >
+                                		<button class="layui-btn layui-btn-normal" lay-submit  lay-filter="LAY-user-front-search">
+                                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                                        </button>
+                                	</div>
+                                	<div class="layui-inline" id="batchPrintDiv" >
+                                		<button id="outHospitalEvent" class="layui-btn layui-btn-normal"  data-type="batchPrintEvent">
+                                			<i class="layui-icon layui-icon-date layuiadmin-button-btn"></i>批量打印
+                                		</button>
+                                	</div>
+                            	</div>
+                       </div>
+                  </div>
+              </div>
+        </div>
+
+        <div class="layui-card-body">
+            <table class="layui-table" id="dataTable" lay-filter="table-result-list" >
+            </table>
+            
+            <div id="printTableDiv" style="display:none">
+            	<table class="layui-table printTable" id="printTable"  lay-skin="line">
+            	
+            		<tbody id="printTableBody">
+					    <tr align="center" id="printTableDr">
+					        <td id="name" >姓名</td>
+					        <td id="departName">科室</td>
+					        <td id="medicalNo">住院号</td>
+					        <td id="recogResult">认证状态</td>
+					        <td id="inDate">入院时间</td>
+					        <td id="sign1">接诊护士签字</td>	
+					        <td id="sign2">接诊医生签字</td>	
+					        <td id="sign3">稽核人员签字</td>	
+					        <td id="sign4">稽核组长签字</td>	
+					    </tr>
+				    </tbody>
+	        	</table>
+            </div>
+            
+           <div id="oneTableDiv" style="display:none"> 
+	           	 
+	        	 <table class="layui-table onetable" id="oneTable" lay-skin="line">
+	        	 	<!--  
+	        	 	<tr align="center">
+					        <td>姓名</td>
+					        <td>科室</td>
+					        <td>住院号</td>
+					        <td>认证状态</td>
+					        <td>入院时间</td>
+					        <td>接诊护士签字</td>
+					        <td>接诊医生签字</td>
+					        <td>稽核人员签字</td>
+					        <td>稽核组长签字</td>
+					</tr> 
+					-->
+				    <tbody id="oneTableBody">
+					    <tr align="center" id="tableTrId">
+					        <td id="namep">姓名</td>
+					        <td id="departNamep">科室</td>
+					        <td id="medicalNop">住院号</td>
+					        <td id="recogResultp">认证状态</td>
+					        <td id="inDatep">入院时间</td>
+					        <td id="signp1">接诊护士签字</td>
+					        <td id="signp2">接诊医生签字</td>
+					        <td id="signp3">稽核人员签字</td>
+					        <td id="signp4">稽核组长签字</td>
+					    </tr>
+				    </tbody>
+				</table>
+           </div>
+            <script type="text/html" id="operatorTpl">
+           		<a  class="layui-btn layui-btn-normal  layui-btn-xs" lay-event="recogEvent"><i class="layui-icon layui-icon-release"></i>认证详情</a>
+			</script> 
+			<script type="text/html" id="departOperator">
+           		<a  class="layui-btn layui-btn-normal  layui-btn-xs" lay-event="printEvent"><i class="layui-icon layui-icon-release"></i>打印身份核验表</a>
+			</script>
+        </div>
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script src="../../static/jquery/jquery.js"></script>
+<script>
+var form_, gTable, vTable;
+layui.config({
+    base: '../../static/layui/' //静态资源所在路径
+}).extend({
+    index: 'modules/index' //主入口模块
+}).use(['index', 'table','laydate','upload'], function() {
+    var $ = layui.$,
+        form = layui.form,
+        laydate = layui.laydate,
+        upload = layui.upload,
+        table = layui.table;
+    	form_ = form;
+    	vTable = table;
+    	gTable = layui.table;
+    //全局变量
+    var globExport = {hospitalId: "", departName:"", personType:"", warningStatus:"", leaveStatus:"",  inDate:"", outDate:"", personFrom:"", busiType:""};
+   
+    var globOrgId = null;
+    //导入在院人员信息参数列表
+    var departName = "";//科室
+    var personType = 1;//参保状态
+    var restStatus = 1;//请假状态
+    var startInHosTime = "";//入院开始时间
+    var endInHosTime = "";//入院结束时间
+    var orgCategory = "";//机构级别
+    var departNameGlob = "";//全局科室名称
+    var departList = {};//科室列表
+    
+    
+    
+    //开始日期
+    var insStart = laydate.render({
+        elem: '#test-laydate-start'
+        , type: 'date'
+        , done: function (value, date) {
+            //更新结束日期的最小日期
+            insEnd.config.min = lay.extend({}, date, {
+                month: date.month - 1
+            });
+
+            //自动弹出结束日期的选择器
+            insEnd.config.elem[0].focus();
+        }
+    });
+
+    //结束日期
+    var insEnd = laydate.render({
+        elem: '#test-laydate-end'
+        , type: 'date'
+        , done: function (value, date) {
+            //更新开始日期的最大日期
+            insStart.config.max = lay.extend({}, date, {
+                month: date.month - 1
+            });
+        }
+    });
+    
+    
+    layui.util.ajax({
+        url: "../../medical/recog/loginUser.jspx",
+        success: function(res) {
+            
+            var data = res.respData;
+            globOrgId = data.orgId;
+            orgCategory = data.orgCategory;
+            if(orgCategory == 1){//医院
+            	$("#hospitalNameTmp").text(data.name);
+            	departList = data.list;
+            	//departNameSelect(data.list);
+            	getTableData(globOrgId);
+            	$("#batchPrintDiv").remove();
+            }else if(orgCategory == 2){//科室
+            	
+            	//若为科室级，则表头显示为 中心医院：XXX科
+            	$("#hospitalNameTmp").text(data.pidName + "-" + data.name);
+            	departNameGlob = data.name;
+            	//若为科室级，则所属科室、科室查询条件隐藏
+            	$("#departNameDiv").remove();
+            	getTableDataNoDepartMent(globOrgId);
+            	
+            	
+            }
+            
+        },
+        error: function(res) {
+        	layer.msg('接口调用异常', {icon: 2});
+        }
+    });
+    
+    
+    form.on('select(departNameFilter)', function(data){
+    	globExport.departName = data.value;
+    }); 
+    form.on('select(personTypeFilter)', function(data){
+    	globExport.personType = data.value;
+  	});
+    form.on('select(busiTypeFilter)', function(data){
+    	globExport.busiType = data.value;
+  	});
+    form.on('select(personFromFilter)', function(data){
+    	globExport.personFrom = data.value;
+  	});
+ 
+
+    form.on('submit(LAY-user-front-search)', function(data) {
+    	var field = data.field;
+    	if(orgCategory == 4){
+    		if(departNameGlob == field.keyword){
+    			field.keyword = "";//过滤本科室名称查询
+    		}
+    	}
+        //执行重载
+        table.reload('dataTable', {
+            
+        	page: {
+                curr: 1
+            },
+            where: field
+        });
+    });
+    
+    
+    table.on('tool(table-result-list)', function(obj) {
+        
+    	var data = obj.data;
+    	var medicalIdTemp = data.medicalId;
+    	var idcardTemp = data.idcard;
+    	var nameTemp = data.name;
+    	var departCodeTemp = data.departCode;
+    	var personIdTemp = data.personId;
+    	var departIdTemp = data.departId;
+    	var departNameTemp = data.departName;
+    	var medicalNoTemp = data.medicalNo;
+	    var bedNo1Temp = data.bedNo;
+	    var hospitalIdTemp = data.hospitalId;
+	    var urlData = "";
+	    if(data.recogEvent == 12){
+	    	
+	    	urlData = './sepecialInfo.html?pk=' + data.medicalId +'&personId='+data.personId + 
+			'&name=' + encodeURI(encodeURI(data.name)) + 
+			'&departName=' + encodeURI(encodeURI(data.departName)) + 
+			'&medicalNo=' + encodeURI(encodeURI(data.medicalNo)) + 
+			'&bedNo=' + encodeURI(encodeURI(data.bedNo)) + 
+			'&inDate=' + data.inDate +
+			'&recogEvent=' + data.recogEvent +
+			'&recogId=' + data.recogId +
+			'&medicalId=' + data.medicalId +
+			"&recogTime=" + data.recogTime ;
+	    }else{
+	    	urlData = './info.html?pk=' + data.medicalId +'&personId='+data.personId + 
+			'&name=' + encodeURI(encodeURI(data.name)) + 
+			'&departName=' + encodeURI(encodeURI(data.departName)) + 
+			'&medicalNo=' + encodeURI(encodeURI(data.medicalNo)) + 
+			'&bedNo=' + encodeURI(encodeURI(data.bedNo)) + 
+			'&inDate=' + data.inDate +
+			'&recogEvent=' + data.recogEvent +
+			'&recogId=' + data.recogId +
+			'&medicalId=' + data.medicalId +
+			"&recogTime=" + data.recogTime ;
+	    }
+	    
+	    //urlData = encodeURIComponent(urlData); encodeURIComponent			
+	    console.log("urlData==" +urlData);
+      if(obj.event === 'recogEvent'){ //预警与认证记录事件
+    	   layer.full(layer.open({
+               type: 2,
+               title: false,
+               //isOutAnim: false,
+               closeBtn:1,
+               content:urlData,
+               maxmin: false,
+               area: ['500px', '450px'],
+               btn: ['返回'],
+               yes: function(index, layero) {
+            	   //table.reload('dataTable'); //数据刷新
+                   layer.close(index); //关闭弹层
+               },
+               success: function(layero, index) {
+
+               }
+           }));
+    	   
+    	 //预警与认证记录事件  
+       }else if(obj.event === 'printEvent'){ //单个打印身份核验表信息事件
+    	   //printTableData(data,"printTable");
+       		
+       		//var dataTables = '[' + data + ']';
+       		/*
+       		var dataTables = new Array();
+       		var dataTables =  '[' + JSON.stringify(data) + ']';
+    	   console.log("dat=="+JSON.stringify(data));
+    	   console.log("dataTables=="+dataTables);
+    	  
+    	   		
+   	    		//执行渲染	
+ 	    		table.render({
+ 	    			   elem: '#oneTable'
+ 	    			  ,data:dataTables
+ 	    			  ,cols: [[
+ 	    			       {field:'name', title: '姓名',align:'center'}
+ 	    			      ,{field:'departName',title: '科室',align:'center'}
+ 	    			      ,{field:'bedNo',align:'center',title: '床号'}
+ 	    			      ,{field:'medicalNo',title: '住院号',align:'center'}
+ 	    			      ,{field:'recogResult',align:'center',title: '入科认证'}
+ 	    			      ,{field:'recogBusi',align:'center',title: '认证方式'}
+ 	    				  ,{field:'personFrom',align:'center',title: '参保地'}
+ 	    			      ,{field:'busiType',align:'center',title: '参保险种'}
+ 	    			      ,{field:'inDate',align:'center',title: '入院时间'}
+ 	    			    ]]
+ 	    		});*/
+ 	    		
+ 	    		
+    	  		 var ids = "oneTable";
+ 	             var checkData = [{name:"", departName:"",medicalNo:"",recogResult:"",inDate:""}];
+ 	                 checkData[0].name = data.name;
+ 	                 checkData[0].departName = data.departName;
+ 	                 checkData[0].medicalNo = data.medicalNo;
+ 	                 checkData[0].recogResult = data.recogStatus;
+ 	                 checkData[0].inDate = data.inDate;
+ 	                 
+ 	            //console.log("ee22=="+JSON.stringify(checkData));
+ 	            //$("#oneTableBody").empty();
+ 	            $("#oneTableBody tr:not(:first)").empty();
+ 	   			 //回显到表格
+ 	   			 $.each(checkData, function (i, n) {  //回显到表格
+ 	   				var row = $("#tableTrId").clone();
+ 	   				row.find("#namep").text(n.name);
+ 	   				row.find("#departNamep").text(n.departName);
+ 	   				row.find("#medicalNop").text(n.medicalNo);
+ 	   				row.find("#recogResultp").text(recogResultBack(n.recogResult));
+ 	  				row.find("#inDatep").text(n.inDate);
+ 	  				row.find("#signp1").text("");
+ 	  				row.find("#signp2").text("");
+ 	  				row.find("#signp3").text("");
+ 	  				row.find("#signp4").text("");
+ 	 	            row.appendTo("#oneTable");//添加到模板的容器中
+	        	});
+ 	            
+ 	            
+ 	   			var f = ["<head>", "<style>", "body{font-size: 10px; color: #666;}", "table{width: 100%; border-collapse: collapse; border-spacing: 0;}", "th,td{line-height: 20px; width:160px; padding: 3px 5px; border: 1px solid #ccc; text-align: center; font-size: 10px; color: #666;}", "a{color: #666; text-decoration:none;}", "*.layui-hide{display: none}", "</style>", "</head>"].join("");
+ 	            //var tableToPrint = document.getElementById('oneTable');//将要被打印的表格
+ 	            var tableToPrint = document.getElementById('oneTableDiv');//将要被打印的表格
+ 	            var newWin= window.open("");//新打开一个空窗口
+ 	            
+ 	            newWin.document.write(f + tableToPrint.innerHTML);//将表格添加进新的窗口
+ 	            //newWin.document.write(f + $(v).prop("outerHTML"));//将表格添加进新的窗口
+ 	            newWin.document.close();//在IE浏览器中使用必须添加这一句
+ 	            newWin.focus();//在IE浏览器中使用必须添加这一句
+ 	            newWin.print();//打印
+ 	            newWin.close();//关闭窗口
+
+ 	            /*
+   	    	    var v = document.createElement("div");
+   	    	    var dateStr = new Date().format("yyyy-MM-dd hh:mm:ss"); 
+   	    	    var f = ["<head><br><div style='text-align:center;font-size:25px;font-weight:bolder'>南阳医院</div><div style='font-size:16px;font-weight:bolder'>人员信息核验表<br>打印日期:" + dateStr + "</div>",
+   	    	             "<style>", "body{font-size: 16px; color: #666;}", "table{width: 100%; border-collapse: collapse; border-spacing: 0;}",
+   	    	             "th,td{line-height: 20px; padding: 9px 10px; border: 1px solid #ccc; text-align: center; font-size: 18px; color: #666;}",
+   	    	             "a{color: #666; text-decoration:none;}", "*.layui-hide{display: none}",
+   	    	             "</style>", "</head>"].join("");
+   	    	             
+   	    	   // var f = ["<head>", "<style>", "body{font-size: 12px; color: #666;}", "table{width: 100%; border-collapse: collapse; border-spacing: 0;}", "th,td{line-height: 20px; padding: 9px 15px; border: 1px solid #ccc; text-align: center; font-size: 12px; color: #666;}", "a{color: #666; text-decoration:none;}", "*.layui-hide{display: none}", "</style>", "</head>"].join("");
+   	    		    $(v).append($(".onetable .layui-table-box").find(".layui-table-header").html());
+   	    		    $(v).find("tr").after($("[lay-id=\"" + ids+ "\"] .layui-table-body.layui-table-main table").html());
+   	    		    $(v).find("th.layui-table-patch").remove();
+   	    		    $(v).find(".layui-table-col-special").remove();
+   	    		  	//页脚展示打印人，打印时间
+   	    		    //var footer = ["<footer><div><div style='float: left;'>打印人：高小飞</div><div style='float: right;'>打印时间：2019-12-31</div></div></footer >"].join("");
+   	    		    var h = window.open("打印窗口", "_blank");
+   	    		    h.document.write(f + $(v).prop("outerHTML"));
+   	    		    h.document.close();
+   	    		    h.print();
+   	    		    h.close();*/
+   	    		    
+   	    		    /*
+   	    		 bdhtml=$("#dayin").html();
+   	             console.log(bdhtml);
+   	             sprnstr="<!--startprint-->";   //开始打印标识字符串有17个字符
+   	             eprnstr="<!--endprint-->";        //结束打印标识字符串
+   	             prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17); //从开始打印标识之后的内容
+   	             prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));//截取开始标识和结束标识之间的内容
+   	             var iframe = null;
+   	             iframe = document.getElementById("iframe1")
+   	             
+   	             var iwindow = null;
+   	             var iwindow = iframe.contentWindow;//获取iframe的window对象
+   	             iwindow.document.close();
+   	             iwindow.document.write(prnhtml);
+   	             iwindow.print(); //调用浏览器的打印功能打印指定区域*/
+   	     
+       }
+        
+        
+    });
+    
+   
+    //事件
+    var active = {
+    		
+    	batchPrintEvent: function() {//批量打印事件
+        	
+    		var tableId = "printTable";
+    		//获取选中数据
+    	    var checkData = vTable.checkStatus('dataTable').data;
+    	     var len = checkData.length;
+    	     if (len > 0) {
+    	    	//执行渲染	
+    	    	/*
+    	    		gTable.render({
+    	    			   elem: '#printTable'
+    	    			  ,data:checkData
+    	    			  ,cols: [[
+    	    			       {field:'name', title: '姓名',align:'center'}
+    	    			      ,{field:'departName',title: '科室4',align:'center'}
+    	    			      ,{field:'bedNo',align:'center',title: '床号'}
+    	    			      ,{field:'medicalNo',title: '住院号',align:'center'}
+    	    			      ,{field:'recogResult',align:'center',title: '入科认证'}
+    	    			      ,{field:'recogBusi',align:'center',title: '认证方式'}
+    	    				  ,{field:'personFrom',align:'center',title: '参保地'}
+    	    			      ,{field:'busiType',align:'center',title: '参保险种'}
+    	    			      ,{field:'inDate',align:'center',title: '入院时间'}
+    	    			    ]]
+    	    			  ,page: true
+    	    		});
+    	    	*/
+    	    $("#printTableBody tr:not(:first)").empty();
+		    $.each(checkData, function (i, n) {  //回显到表格
+
+		    	//$("#printTableBody").empty();
+	            var row = $("#printTableDr").clone();
+	            //console.log("n=="+JSON.stringify(n));
+	            //console.log("n.name=="+n.name);
+	            row.find("#name").text(n.name);
+	            row.find("#departName").text(n.departName);
+	            row.find("#medicalNo").text(n.medicalNo);
+	            row.find("#recogResult").text(recogResultBack(n.recogStatus));
+	            row.find("#inDate").text(n.inDate);
+	            row.find("#sign1").text("");
+	            row.find("#sign2").text("");
+	            row.find("#sign3").text("");
+	            row.find("#sign4").text("");
+	            row.appendTo("#printTable");//添加到模板的容器中
+	        });
+    	    	
+    	    		 	var f = ["<head>", "<style>", "body{font-size: 10px; color: #666;}", "table{width: 100%; border-collapse: collapse; border-spacing: 0;}", "th,td{line-height: 20px; width:160px; padding: 3px 5px; border: 1px solid #ccc; text-align: center; font-size: 10px; color: #666;}", "a{color: #666; text-decoration:none;}", "*.layui-hide{display: none}", "</style>", "</head>"].join("");
+    	 	            var tableToPrint = document.getElementById('printTableDiv');//将要被打印的表格
+    	 	            var newWin= window.open("");//新打开一个空窗口
+    	 	            //console.log("tableToPrint=="+tableToPrint.innerHTML);
+    	 	            newWin.document.write(f + tableToPrint.innerHTML);//将表格添加进新的窗口
+    	 	            //newWin.document.write(f + $(v).prop("outerHTML"));//将表格添加进新的窗口
+    	 	            newWin.document.close();//在IE浏览器中使用必须添加这一句
+    	 	            newWin.focus();//在IE浏览器中使用必须添加这一句
+    	 	            newWin.print();//打印
+    	 	            newWin.close();//关闭窗口
+    	    		
+    	    	/*
+    	    	    var v = document.createElement("div");
+    	    	    var nowDate = new Date();
+    	    	    var dateStr = new Date().format("yyyy-MM-dd hh:mm:ss");
+    	    	             
+    	    	    var f = ["<head>", "<style>", "body{font-size: 12px; color: #666;}", "table{width: 100%; border-collapse: collapse; border-spacing: 0;}", "th,td{line-height: 20px; padding: 9px 15px; border: 1px solid #ccc; text-align: center; font-size: 12px; color: #666;}", "a{color: #666; text-decoration:none;}", "*.layui-hide{display: none}", "</style>", "</head>"].join("");
+    	    		    $(v).append($(".layui-table-box").find(".layui-table-header ").html());
+    	    		    $(v).find("tr").after($("[lay-id=\"" + tableId+ "\"] .layui-table-body.layui-table-main table").html());
+    	    		    $(v).find("th.layui-table-patch").remove();
+    	    		    $(v).find(".layui-table-col-special").remove();
+    	    		  	//页脚展示打印人，打印时间
+    	    		    var footer = ["<footer><div><div style='float: left;'>打印人：高小飞</div><div style='float: right;'>打印时间：2019-12-31</div></div></footer >"].join("");
+    	    		    var h = window.open("打印窗口", "_blank");
+    	    		    h.document.write(f + $(v).prop("outerHTML"));
+    	    		    h.document.close();
+    	    		    h.print();
+    	    		    h.close();*/
+    	     }else {
+    	         layer.msg("请先勾选需打印人员信息!",{icon:1, time:3000});
+    	         return;
+    	     }
+    	     //console.log("checkData8=="+JSON.stringify(checkData));
+    		
+        	
+        },
+  		cleanContext: function(){
+  			
+  			departName = "";//科室
+  	        personType = "";//参保状态
+  	        restStatus = "";//请假状态
+  	        startInHosTime = "";//入院开始时间
+  	        endInHosTime =   "";//入院结束时间
+  		}
+        
+    };
+
+    $('.layui-btn.layui-btn-normal').on('click', function() {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    });
+    
+    //监听表格复选框选择
+    table.on('checkbox(warnTable)', function (obj) {
+    	
+    	//table.checkStatus('dataTable').data;
+         console.log(JSON.stringify(obj));
+    });
+    
+    
+    
+    function departNameSelect(data){
+    	
+    	var departNameHtml="<option value=''>全部</option>";
+		for (var i = 0; i < data.length; i++) {
+			departNameHtml+="<option value="+data[i].name+">"+data[i].name+"</option>";
+        }
+		 $("#departName").append(departNameHtml);
+		 form_.render('select');
+    }
+    
+    function getTableData(orgId){
+    	table.render({
+ 		    elem: '#dataTable'
+ 		    ,url:'../../medical/recog/list.jspx'
+ 		    ,cols: [[
+			  // {type:'checkbox', fixed: 'left'}      
+			  {field:'medicalId', title: 'medicalId',align:'center', hide:true}
+			  ,{field:'recogId', title: 'recogId',align:'center',hide:true} 
+ 		      ,{field:'name', title: '姓名',align:'center'}
+ 		      //,{field:'idcard',align:'center',title: '身份证号码',align:'center'}
+ 		      ,{field:'departName',title: '科室',align:'center'}
+ 		      ,{field:'bedNo',align:'center',title: '床号'}
+ 		      ,{field:'medicalNo',title: '住院号',align:'center'}
+ 		      ,{field:'recogStatus',align:'center',title: '入科认证', templet:function(d){ if(d.recogStatus == 0){ return "未认证"}else if(d.recogStatus == 1){return "认证成功"}else if(d.recogStatus == 2){return "认证失败"} else {return ""} }}
+ 		      //,{field:'recogResult',align:'center',title: '入科认证', templet:function(d){ if(d.recogResult == 10){ return "未认证"}else if(d.recogResult == 11){return "认证成功"}else if(d.recogResult == 12){return "认证失败"} else {return ""} }}
+		      //,{field:'recogMode',align:'center',title: '认证方式', templet:function(d){ if(d.recogMode == 11){ return "人脸核验"}else if(d.recogMode == 21){return "特殊建模"}else if(d.recogMode == 23) {return "特殊登记"}else{return ""}  }}
+ 		      ,{field:'personFrom',align:'center',title: '参保地', templet:function(d){if(d.personFrom == 1){return"本省"}else if(d.personFrom == 2){return "本市"}else if(d.personFrom == 3){return "省本级"}else if(d.personFrom == 4){ return "外省"}else{ return ""}}}
+		      ,{field:'busiType',align:'center',title: '参保险种',
+		    	  templet:function(d){if(d.busiType == 310){return"城镇职工医保"}else if(d.busiType == 390){return "城乡居民医保"}else if(d.busiType == 410){return "工伤"}else if(d.busiType == 510){ return "生育"}else{ return ""}}
+		      
+		      }//310职工医保、390居民医保  410工伤、510生育
+		      
+ 		     // ,{field:'personName',align:'center',title: '参保状态',  templet:function(d){ if(d.personType == 2){ return "待确认参保"}else if(d.personType == 1){return "已确认参保"}else {return ""} }}
+		      ,{field:'recogEvent',title: '认证方式',align:'center', templet:function(d){ if(d.recogEvent == 10){ return "人脸核查"}else if(d.recogEvent == 11){return "特殊登记"}else if(d.recogEvent == 12){return "特殊建模"} else {return ""}}}
+		      ,{field:'inDate',align:'center',title: '入院时间'}
+ 		      ,{
+                title: '操作',
+                align: 'center',
+                toolbar: '#operatorTpl'
+            }
+ 		    ]]
+ 		    ,page: true
+ 		    //,initSort: {field:'inDate', type:'desc'}
+ 		  });
+    }
+    
+  
+    function getTableDataNoDepartMent(orgId){
+    	table.render({
+ 		    elem: '#dataTable'
+ 		    ,url:'../../medical/recog/list.jspx'
+ 		    ,cols: [[
+			   {type:'checkbox', fixed: 'left'}      
+			  ,{field:'medicalId', title: 'medicalId',align:'center', hide:true}
+			  ,{field:'departId', title: 'departId',align:'center',hide:true}
+			  ,{field:'departCode', title: 'departCode',align:'center', hide:true} 
+			  ,{field:'personId', title: 'personId',align:'center', hide:true}
+			  ,{field:'hospitalId', title: 'hospitalId',align:'center', hide:true} 
+ 		      ,{field:'name', title: '姓名',align:'center'}
+ 		      //,{field:'idcard',align:'center',title: '身份证号码',align:'center'}
+ 		      ,{field:'departName',title: '科室',align:'center'}
+ 		      ,{field:'bedNo',align:'center',title: '床号'}
+ 		      ,{field:'medicalNo',title: '住院号',align:'center'}
+ 		      ,{field:'recogStatus',align:'center',title: '入科认证', templet:function(d){ if(d.recogStatus == 0){ return "未认证"}else if(d.recogStatus == 1){return "认证成功"}else if(d.recogStatus == 2){return "认证失败"} else {return ""} }}
+ 		      //,{field:'recogResult',align:'center',title: '入科认证', templet:function(d){ if(d.recogResult == 10){ return "未认证"}else if(d.recogResult == 11){return "认证成功"}else if(d.recogResult == 12){return "认证失败"} else {return ""} }}
+		      //,{field:'recogBusi',align:'center',title: '认证方式', templet:function(d){ if(d.recogBusi == 0){ return "未生效"}else if(d.recogBusi == 1){return "生效中"}else if(d.recogBusi == 2) {return "已结束"}else if(d.recogBusi == 3){ return "被驳回"}else{return ""}  }}
+ 		      ,{field:'personFrom',align:'center',title: '参保地', templet:function(d){if(d.personFrom == 1){return"本省"}else if(d.personFrom == 2){return "本市"}else if(d.personFrom == 3){return "省本级"}else if(d.personFrom == 4){ return "外省"}else{ return ""}}}
+		      ,{field:'busiType',align:'center',title: '参保险种',
+		    	  templet:function(d){if(d.busiType == 310){return"城镇职工医保"}else if(d.busiType == 390){return "城乡居民医保"}else if(d.busiType == 410){return "工伤"}else if(d.busiType == 510){ return "生育"}else{ return ""}}
+		      
+		      }//310职工医保、390居民医保  410工伤、510生育
+		      
+ 		     // ,{field:'personName',align:'center',title: '参保状态',  templet:function(d){ if(d.personType == 2){ return "待确认参保"}else if(d.personType == 1){return "已确认参保"}else {return ""} }}
+ 		      ,{field:'inDate',align:'center',title: '入院时间'}
+ 		      ,{
+                title: '操作',
+                align: 'center',
+                toolbar: '#departOperator'
+            }
+ 		    ]]
+ 		    ,page: true
+ 		    //,initSort: {field:'inDate', type:'desc'}
+ 		  });
+    }
+    
+});
+
+
+//判断字符是否为空的
+function isEmpty(obj){
+ if(typeof obj == "undefined" || obj == null || obj == "" || obj== "null"){
+     return true;
+ }else{
+     return false;
+ }
+}
+
+function printTableData(dataTable, tableIds)
+{
+	var tableId = "printTable";
+	//console.log("tableIds12=="+tableIds);
+   // console.log("checkData8=="+JSON.stringify(dataTable));
+	//执行渲染	
+	gTable.render({
+		   elem: '#printTable'
+		  ,data:dataTable
+		  ,cols: [[
+		       {field:'name', title: '姓名',align:'center'}
+		      ,{field:'departName',title: '科室',align:'center'}
+		      ,{field:'bedNo',align:'center',title: '床号'}
+		      ,{field:'medicalNo',title: '住院号',align:'center'}
+		      ,{field:'recogResult',align:'center',title: '入科认证'}
+		      ,{field:'recogBusi',align:'center',title: '认证方式'}
+			  ,{field:'personFrom',align:'center',title: '参保地'}
+		      ,{field:'busiType',align:'center',title: '参保险种'}
+		      ,{field:'inDate',align:'center',title: '入院时间'}
+		    ]]
+	});
+	
+    var v = document.createElement("div");
+    var nowDate = new Date();
+    var dateStr = dateFormat("YYYY-mm-dd HH:MM", nowDate);
+    var f = ["<head><br><div style='text-align:center;font-size:25px;font-weight:bolder'>南阳医院</div><div style='font-size:16px;font-weight:bolder'>人员信息核验表<br>打印日期:" + dateStr + "</div>",
+             "<style>", "body{font-size: 16px; color: #666;}", "table{width: 100%; border-collapse: collapse; border-spacing: 0;}",
+             "th,td{line-height: 20px; padding: 9px 10px; border: 1px solid #ccc; text-align: center; font-size: 18px; color: #666;}",
+             "a{color: #666; text-decoration:none;}", "*.layui-hide{display: none}",
+             "</style>", "</head>"].join("");
+             
+   // var f = ["<head>", "<style>", "body{font-size: 12px; color: #666;}", "table{width: 100%; border-collapse: collapse; border-spacing: 0;}", "th,td{line-height: 20px; padding: 9px 15px; border: 1px solid #ccc; text-align: center; font-size: 12px; color: #666;}", "a{color: #666; text-decoration:none;}", "*.layui-hide{display: none}", "</style>", "</head>"].join("");
+	    $(v).append($(".layui-table-box").find(".layui-table-header").html());
+	    $(v).find("tr").after($("[lay-id=\"" + tableId+ "\"] .layui-table-body.layui-table-main table").html());
+	    $(v).find("th.layui-table-patch").remove();
+	    $(v).find(".layui-table-col-special").remove();
+	  	//页脚展示打印人，打印时间
+	   // var footer = ["<footer><div><div style='float: left;'>打印人：高小飞</div><div style='float: right;'>打印时间：2019-12-31</div></div></footer >"].join("");
+	    var h = window.open("打印窗口", "_blank");
+	    h.document.write(f + $(v).prop("outerHTML"));
+	    h.document.close();
+	    h.print();
+	    h.close();
+    
+}
+
+
+Date.prototype.format = function(format) 
+
+{ //author: meizz 
+
+	var o = {
+
+			"M+" : this.getMonth()+1, //month
+
+			"d+" : this.getDate(), //day
+
+			"h+" : this.getHours(), //hour
+
+			"m+" : this.getMinutes(), //minute
+
+			"s+" : this.getSeconds(), //second
+
+			"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+
+			"S" : this.getMilliseconds() //millisecond
+
+			}
+
+			if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+
+			(this.getFullYear()+"").substr(4- RegExp.$1.length));
+
+			for(var k in o)if(new RegExp("("+ k +")").test(format))
+
+			format = format.replace(RegExp.$1,
+
+			RegExp.$1.length==1? o[k] :
+
+			("00"+ o[k]).substr((""+ o[k]).length));
+
+			return format; 
+
+}
+
+function recogResultBack(type){
+	
+	var result ="";
+	if(type == 0 || type == 20 || type == 30){
+		result ="未认证";
+	}else if(type == 1 || type == 21 || type == 31){
+		result ="认证成功";
+	}else if( type == 2 || type == 22 || type == 32){
+		result ="认证失败";
+	}
+	/*
+	if(type == 10 || type == 20 || type == 30){
+		result ="未认证";
+	}else if(type == 11 || type == 21 || type == 31){
+		result ="认证成功";
+	}else if( type == 12 || type == 22 || type == 32){
+		result ="认证失败";
+	}*/
+	return result;
+}
+</script>
+</body>
+</html>

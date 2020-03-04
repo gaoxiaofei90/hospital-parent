@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>就诊管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/layui/css/admin.css" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form">
+            <div class="layui-card-body">
+                <div style="border-bottom: 1px solid #DDDDDD;margin: 10px 0px;">
+                    <div class="layui-card-head">查询<span class="layui-font-auxi">&nbsp;</span>
+                    </div>
+                    <div class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item layui-form" style="margin-top: 7px;">
+                            <div class="layui-item-lemo">
+                                <!-- <div class="layui-inline">
+                                    <label class="layui-title-lable">统筹区</label>
+                                   <div class="layui-input-block layui-input-title">
+                                        <select  name="zoneCode" lay-filter="zoneCode"  id="zoneCode" placeholder="统筹区"
+                                                 llw-select-key="zoneCode" llw-select-label="zoneName"
+                                                 llw-select-url="../../medical/zone/zoneList.jspx">
+                                        </select>
+                                    </div>
+                                </div> -->
+                               <div class="layui-inline">
+                                    <label class="layui-title-lable">关键字</label>
+                                    <div class="layui-select-mete">
+                                       <input type="text" name="keyword" placeholder="请输入姓名/身份证/床号/住院号/医院" autocomplete="off" class="layui-input" style="width: 220px;">
+                                    </div>
+                                </div>
+
+                            <!-- <div class="layui-inline">
+                                    <label class="layui-title-lable">性别</label>
+                                    <div class="layui-select-mete">
+                                        <select name="sex" llw-select-key="fieldValue" llw-select-label="valueComment"
+                                                llw-select-url="../../medical/sysDemo/sex.jspx">
+                                        </select>
+                                    </div>
+                                </div>-->
+
+                                <div class="layui-inline" style="min-width: 300px;">
+                                    <label class="layui-title-lable">入院时间</label>
+                                    <div class="layui-select-mete">
+                                        <div class="layui-input-inline" style="width: 90px;">
+                                            <input type="text" id="test-laydate-start"  lay-filter="beginDate" class="layui-input" name="startTime" placeholder="yyyy-MM-dd">
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 20px;margin-right: 0;height: 32px;line-height: 32px;">
+                                            ~
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 90px;">
+                                            <input type="text" id="test-laydate-end" name="endTime" lay-filter="endDate" class="layui-input" placeholder="yyyy-MM-dd">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                        <button class="layui-btn layui-btn-normal" lay-submit  lay-filter="LAY-user-front-search">
+                                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                                        </button>
+                                        <a class="layui-btn layui-btn-normal llw-reset" lay-submit="" lay-filter="LAY-app-reset" id="clean">
+                                            重置
+                                        </a>
+                                    </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                
+                 <div class="layui-card-body">
+		            <div style="padding-bottom: 6px;text-align: left;">
+		                <button llw-permission="medical:medical:save" class="layui-btn layui-btn-normal layui-btn-sm"  data-type="add">添加</button>
+		            </div>
+                <table class="layui-table" lay-data="{ url:'../../medical/medical/list.jspx', page:true, id:'table-result-list'}" lay-filter="table-result-list">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'name'}">姓名</th>
+                        <th lay-data="{field:'idcard', width: 160, align:'center'}">身份证</th>
+                        <th lay-data="{field:'hospitalName'}">医院名称</th>
+                        <th lay-data="{field:'diagnosis'}">诊断</th>
+                        <th lay-data="{field:'medicalNo', width: 100}">住院号</th>
+                        <th lay-data="{field:'bedNo', width: 100}">床号</th>
+                        <th lay-data="{field:'inDate', width: 100}">入院时间</th>
+                        <th lay-data="{title: '操作', width: 80, align:'center', fixed: 'right', toolbar: '#operatorTpl'}">操作</th>
+                    </tr>
+                    </thead>
+                </table>
+                </div>
+                <script type="text/html" id="operatorTpl">
+				<a llw-permission="medical:medical:info" class="font-color-btn" lay-event="info">详情</a>
+                </script>
+                
+                <!--  <a llw-permission="medical:medical:update" class="font-color-btn" lay-event="update">编辑</a>
+                <a llw-permission="medical:medical:delete" class="font-color-btn" lay-event="delete">删除</a> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../static/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '../../static/layui/' //静态资源所在路径
+    }).extend({
+        index: 'modules/index' //主入口模块
+    }).use(['index', 'table','laydate','admin','code','laytpl','llw_treeSelect'], function() {
+        var $ = layui.$,
+            form = layui.form,
+            admin = layui.admin,
+            laydate = layui.laydate,
+            laytpl = layui.laytpl,
+            table = layui.table;
+            //开始日期
+            var insStart = laydate.render({
+                elem: '#test-laydate-start'
+                ,type: 'date'
+                ,done: function(value, date){
+                    //更新结束日期的最小日期
+                    insEnd.config.min = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+
+                    //自动弹出结束日期的选择器
+                    insEnd.config.elem[0].focus();
+                }
+            });
+
+            //结束日期
+            var insEnd = laydate.render({
+                elem: '#test-laydate-end'
+                ,type: 'date'
+                ,done: function(value, date){
+                    //更新开始日期的最大日期
+                     insStart.config.max = lay.extend({}, date, {
+                         month: date.month - 1
+                     });
+                }
+            });
+
+        //监听搜索
+        form.on('submit(LAY-user-front-search)', function(data) {
+            var field = data.field;
+            field.beginDate=$('#test-laydate-start').val();
+            if(field.beginDate && field.beginDate.length > 0)
+            {
+                field.beginDate = field.beginDate + " 00:00:00";
+            }
+            field.endDate=$('#test-laydate-end').val();
+            if(field.endDate && field.endDate.length > 0)
+            {
+                field.endDate = field.endDate + " 23:59:59";
+            }
+            //执行重载
+            table.reload('table-result-list', {
+                page: {
+                    curr: 1
+                },
+                where: field
+            });
+        });
+
+        table.on('tool(table-result-list)', function(obj) {
+            var data = obj.data;
+            table.on('tool(table-result-list)', function(obj) {
+                var data = obj.data;
+                if(obj.event === 'delete') {
+                    layer.confirm('确认要删除吗？', function(index) {
+                        layui.util.ajax({
+                            url: "../../medical/medical/delete.jspx",
+                            data: {pk:data.medicalId},
+                            success: function(res) {
+                                table.reload('table-result-list'); //数据刷新
+                                layer.close(index);
+                            }
+                        });
+
+                    });
+                }else if(obj.event === 'update') {
+                var index = layer.open({
+                    type: 2,
+                    title: '编辑',
+                    content: './medicalUpdate.html?medicalId=' + data.medicalId,
+                    maxmin: true,
+                    area: ['500px', '450px'],
+                    btn: ['确定', '取消'],
+                    yes: function(index, layero) {
+                        var iframeWindow = window['layui-layer-iframe' + index],
+                            submitID = 'LAY-front-submit',
+                            submit = layero.find('iframe').contents().find('#' + submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                            var field = data.field; //获取提交的字段
+
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            layui.util.ajax({
+                                url: "../../medical/medical/update.jspx",
+                                data: field,
+                                success: function(res) {
+                                    table.reload('table-result-list'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                }
+                            });
+
+                        });
+
+                        submit.trigger('click');
+                    },
+                    success: function(layero, index) {
+
+                    }
+                });
+                layer.full(index);
+                //-----  结束  ------
+            }else if(obj.event === 'info') {
+                //----- 弹出修改订单窗口----
+                layer.full(layer.open({
+                    type: 2,
+                    title: '详情',
+                    content: './medicalInfo.html?medicalId=' + data.medicalId,
+                    maxmin: true,
+                    area: ['800px', '650px'],
+                    btn: ['取消'],
+                    success: function(layero, index) {
+
+                    }
+                }));
+                //-----  结束  ------
+            }
+        });
+    });
+        
+        //事件
+        var active = {
+            add: function() {
+                layer.open({
+                    type: 2,
+                    title: '添加就诊信息',
+                    content: './medicalInfo.html',
+                    maxmin: true,
+                    area: ['500px', '450px'],
+                    btn: ['确定', '取消'],
+                    yes: function(index, layero) {
+                        var iframeWindow = window['layui-layer-iframe' + index],
+                            submitID = 'LAY-front-submit',
+                            submit = layero.find('iframe').contents().find('#' + submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit(' + submitID + ')', function(data) {
+                            var field = data.field; //获取提交的字段
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            layui.util.ajax({
+                                url: "../../medical/medical/save.jspx",
+                                data: field,
+                                success: function(res) {
+                                    table.reload('table-result-list'); //数据刷新
+                                    layer.close(index); //关闭弹层
+                                }
+                            });
+                            table.reload('table-result-list'); //数据刷新
+                            layer.close(index); //关闭弹层
+                        });
+                        submit.trigger('click');
+                    }
+                });
+            }
+        };
+        $('.layui-btn.layui-btn-normal').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+</body>
+</html>

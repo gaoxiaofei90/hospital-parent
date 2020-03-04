@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>医保监控实人认证平台</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="static/imgs/favicon.ico" >
+    <link rel="stylesheet" href="static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="static/css/login.css" media="all">
+    <link rel="stylesheet" href="static/css/admin.css" media="all">
+    <script type="text/javascript" src="static/jquery/jquery.js"></script>
+    <script type="text/javascript" src="static/jquery/jquery-cookie.js"></script>
+    <script type="text/javascript" src="static/commonJs/savePassword.js"></script>
+  <style>
+  	.layui-user-nav{width: 100%;height: 50px;position: absolute;top: 0;/*background:rgba(0,0,0,0.2);*/}
+  	.logo{padding: 10px 0;float: left;margin-left: 30px;}
+  	.layadmin-user-login-main{position: absolute;top: 50%;right: 0;background: #FFFFFF;box-shadow:0 0 8px rgba(0,0,255,.1);z-index:2222;border-radius:4px;width: 380px;margin-right: 18%;height: 414px;margin-top:-240px;}
+  	.layui-form-item{margin-bottom: 10px;}
+  	.layui-input{height: 40px;background:hsla(0,0%,71%,.1);}
+  	.layui-btn{height: 40px;line-height: 40px;font-size: 16px;}
+  	.layadmin-user-login-header{border-bottom: 1px solid rgba(0,0,0,0.1);}
+  	.layadmin-user-login-box{padding: 25px 30px;}
+  	body{
+  		background: -webkit-linear-gradient(#29b6f6, #1e88e5); /* Safari 5.1 - 6.0 */
+		  background: -o-linear-gradient(#29b6f6, #1e88e5); /* Opera 11.1 - 12.0 */
+		  background: -moz-linear-gradient(#29b6f6, #1e88e5); /* Firefox 3.6 - 15 */
+		  background: linear-gradient(#29b6f6, #1e88e5); /* 标准的语法 */
+		 }
+  </style>
+</head>
+<body onkeydown="keyLogin();">
+	<!--<div style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;">
+		<img src="zf.png" style="width: 100%;height: 100%;">
+	</div>-->
+	<div class="layui-user-nav">
+		<div class="logo">
+		<!-- 
+			<img src="./static/imgs/logo.png" width="100px">
+		 -->
+		</div>
+		<!--<ul class="layui-user-ul">
+			<li><a href="index.html"><i class="layui-icon layui-icon-home" style="padding-right: 5px;"></i>首页</a></li>
+			<li><a href="index.html"><i class="layui-icon layui-icon-release" style="padding-right: 5px;"></i>下载服务APP</a></li>
+		</ul>-->
+	</div>
+  <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+	<div class="layui-user-top-back"></div>
+		<div style="position: absolute;left: 10%;top:18%;width:40%;">
+			<img src="static/imgs/666.png" style="width: 100%;">
+		</div>
+    <div class="layadmin-user-login-main" style="height: 360px;">
+      <div class="layadmin-user-login-box layadmin-user-login-header" style="">
+        <h2 style="font-weight: bold;color: #2e2d75;">医保监控实人认证平台</h2>
+        <!--<p>老人信息、居家养老系统、机构养老系统</p>-->
+      </div>
+      <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+          <input type="text" name="username" value="" id="LAY-user-login-username" lay-verify="required" placeholder="用户名" class="layui-input">
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+          <input type="password" name="password" value="" id="LAY-user-login-password" lay-verify="required" placeholder="密码" class="layui-input">
+        </div>
+        <!--<div class="layui-form-item" style="display: none;">
+          <div class="layui-row">
+            <div class="layui-col-xs7">
+              <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="LAY-user-login-vercode"></label>
+              <input type="text" name="vercode" id="LAY-user-login-vercode"  placeholder="图形验证码" class="layui-input">
+            </div>
+            <div class="layui-col-xs5">
+              <div style="margin-left: 10px;">
+                <img src="captcha.jspx" class="layadmin-user-login-codeimg" id="LAY-user-get-vercode">
+              </div>
+            </div>
+          </div>
+        </div>-->
+        <div class="layui-form-item" style="margin-bottom: 20px;display: none;">
+          <input type="checkbox" name="remember" lay-skin="primary" title="记住密码">
+          <a href="forget.html" class="layadmin-user-jump-change layadmin-link"
+             style="position: relative;top: 6px;">忘记密码？</a>
+        </div>
+        <div class="layui-form-item" style="margin-top: 50px;">
+          <button class="layui-btn layui-btn-fluid" id="LAY-user-login-submit" lay-submit lay-filter="LAY-user-login-submit" style="background: #007DDB;">登 入</button>
+        </div>
+        <div class="layui-form-item" style="text-align: center;display: none;">
+    		      没有账号？&nbsp;<a href="register.html" class="layadmin-link" style="">申请试用</a>
+        </div>
+      </div>
+    </div>  
+  </div>
+    <div style="position: fixed;text-align: center;bottom: 12px;width: 100%;font-size: 16px;color: white;">
+ <!-- 
+    全国服务热线：400-900-6992
+  -->  
+    </div>
+    <script src="static/layui/layui.js"></script>
+    <script>
+        /*document.getElementById("LAY-user-get-vercode").src = "captcha.jspx?v="+Math.random();*/
+    	function keyLogin(){
+        if (event.keyCode==13){
+            document.getElementById("LAY-user-login-submit").click(); //调用登录按钮的登录事件
+        }  //回车键的键值为13
+    }
+        layui.use(['form'], function () {
+            var $ = layui.$
+                , form = layui.form;
+            form.render();
+
+            //提交
+            form.on('submit(LAY-user-login-submit)', function (obj) {
+                //保存密码
+                SavePassword.onLogin();
+
+                var data = {};
+                data.username = obj.field.username;
+                data.password = obj.field.password;
+                data.rememberMe = obj.field.rememberMe;
+                //data.vercode = obj.field.vercode;
+				console.log("------da---"+JSON.stringify(data));
+                $.ajax({
+                    url: 'login.jspx',
+                    contentType: "application/json",
+                    type: 'POST',
+                    data: JSON.stringify(obj.field),
+                    success: function (json) {
+                        if (json.respCode == 0) {
+                            location.href = 'manage/index.jspx';
+                        } else {
+                            layer.msg(json.respMsg);
+
+                            /*var verifyCodeUrl = $('#LAY-user-get-vercode').attr('src');
+                            $('#LAY-user-get-vercode').attr('src', verifyCodeUrl + '?v=' + new Date().getTime());*/
+
+                            if (10101 == json.respCode) {
+                                $('#username').focus();
+                            }
+                            if (10102 == json.respCode) {
+                                $('#password').focus();
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+                return false;
+            });
+            $(document).on('click', '#LAY-user-get-vercode', function (data) {
+                var ran = Math.random();
+                $(this).attr("src", "captcha.jspx?"+ran);
+            });
+
+            jQuery(function(){
+                //填写记录在cookie中的密码
+                SavePassword.autoFillIn(form);
+            });
+        });
+    </script>
+</body>
+</html>

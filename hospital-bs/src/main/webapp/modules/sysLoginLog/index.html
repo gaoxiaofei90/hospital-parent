@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>登录日志</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/layui/css/admin.css" media="all">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form">
+            <div class="layui-card-body">
+                <div style="border-bottom: 1px solid #DDDDDD;margin: 10px 0px;">
+                    <div class="layui-card-head">查询<span class="layui-font-auxi"></span>
+                    </div>
+                    <div class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item layui-form" style="margin-top: 7px;">
+                            <div class="layui-item-lemo">
+                            
+                            	<div class="layui-inline">
+                                    <div class="layui-title-lable">登录名</div>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="username" placeholder="请输入登录名称" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline" style="min-width: 300px;">
+                                    <label class="layui-title-lable">操作时间</label>
+                                    <div class="layui-select-mete">
+                                        <div class="layui-input-inline" style="width: 90px;">
+                                            <input type="text" id="test-laydate-start" name="test-laydate-start" lay-filter="test-laydate-start" class="layui-input" placeholder="yyyy-MM-dd">
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 20px;margin-right: 0;height: 32px;line-height: 32px;">
+                                            ~
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 90px;">
+                                            <input type="text" id="test-laydate-end" name="test-laydate-end" lay-filter="test-laydate-end" class="layui-input" placeholder="yyyy-MM-dd">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-inline" >
+                                        <a class="layui-btn layui-btn-normal llw-reset" lay-submit="" lay-filter="LAY-app-reset" id="cleanContext" data-type="cleanContext">
+                                            <i class="layui-icon layui-icon-refresh layuiadmin-button-btn"></i>重置
+                                        </a>
+                                	</div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn layui-btn-normal" id="LAY-user-front-search" lay-submit lay-filter="LAY-user-front-search">
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="layui-table" lay-data="{ url:'../../medical/sysLoginLog/list.jspx', page:true, id:'table-result-list'}" lay-filter="table-result-list">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'username'}">登录名</th>
+                        <th lay-data="{field:'ip'}">登录IP地址</th>
+                        <th lay-data="{field:'action'}">登录操作</th>
+                        <th lay-data="{field:'createTime'}">操作时间</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../static/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '../../static/layui/' //静态资源所在路径
+    }).extend({
+        index: 'modules/index' //主入口模块
+    }).use(['index', 'table','laydate','admin','code'], function() {
+        var $ = layui.$,
+            form = layui.form,
+            admin = layui.admin,
+            laydate = layui.laydate,
+            table = layui.table;
+
+        var dateStart,dateEnd;
+        //开始日期
+        var insStart = laydate.render({
+            elem: '#test-laydate-start'
+            ,type: 'datetime'
+            ,done: function(value, date){
+                //更新结束日期的最小日期
+                // insEnd.config.min = lay.extend({}, date, {
+                //     month: date.month - 1
+                // });
+
+                //自动弹出结束日期的选择器
+                // insEnd.config.elem[0].focus();
+            }
+        });
+
+        //结束日期
+        var insEnd = laydate.render({
+            elem: '#test-laydate-end'
+            ,type: 'datetime'
+            ,done: function(value, date){
+                //更新开始日期的最大日期
+                // insStart.config.max = lay.extend({}, date, {
+                //     month: date.month - 1
+                // });
+            }
+        });
+        //监听搜索
+        form.on('submit(LAY-user-front-search)', function(data) {
+            var field = data.field;
+            field.createTimeStart=$('#test-laydate-start').val();
+            field.createTimeEnd=$('#test-laydate-end').val();
+            //执行重载
+            table.reload('table-result-list', {
+                page: {
+                    curr: 1
+                },
+                where: field
+            });
+        });
+
+
+        table.on('tool(table-result-list)', function(obj) {
+            var data = obj.data;
+            // if(obj.event === 'del') {} else if(obj.event === 'edit') {}else if(obj.event === 'permission') {}
+        });
+        //事件
+        var active = {
+            // add: function() {}
+        };
+
+        $('.layui-btn.layui-btn-normal').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+</body>
+</html>

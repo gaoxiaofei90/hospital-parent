@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>编辑${comments}</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+	</head>
+	<body>
+		<div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+			<div class="layui-card-body layui-row layui-col-space10">
+				<input type="hidden" class="layui-input" name="demoId"></input>
+																		                        <div class="layui-col-md5">
+                            <label class="layui-form-label">姓名</label>
+                            <div class="layui-input-block layui-input-title">
+								                                    <input type="text" lay-verify="required" class="layui-input" placeholder="请输入姓名" name="name"></input>
+								                            </div>
+                        </div>
+														                        <div class="layui-col-md5">
+                            <label class="layui-form-label">创建时间</label>
+                            <div class="layui-input-block layui-input-title">
+								                                    <input type="text" name="ctime" id="ctime" autocomplete="off" class="layui-input" lay-verify="required">
+								                            </div>
+                        </div>
+														                        <div class="layui-col-md5">
+                            <label class="layui-form-label">系统编码</label>
+                            <div class="layui-input-block layui-input-title">
+								                                    <input type="text" lay-verify="required" class="layui-input" placeholder="请输入系统编码" name="sysCode"></input>
+								                            </div>
+                        </div>
+														                        <div class="layui-col-md5">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-block layui-input-title">
+								                                    <select type="text" name="sex" lay-verify="required">
+                                        <option value="请选择"></option>
+										                                            <option value="1">男</option>
+										                                            <option value="2">女</option>
+																			</select>
+								                            </div>
+                        </div>
+														                        <div class="layui-col-md5">
+                            <label class="layui-form-label">机构id</label>
+                            <div class="layui-input-block layui-input-title">
+								                                    <input type="text" lay-verify="number" class="layui-input" placeholder="请输入机构id" name="orgId"></input>
+								                            </div>
+                        </div>
+														                        <div class="layui-col-md5">
+                            <label class="layui-form-label">统筹区</label>
+                            <div class="layui-input-block layui-input-title">
+								                                    <input type="text" lay-verify="$column.verify" class="layui-input" placeholder="请输入统筹区" name="aaa027"></input>
+								                            </div>
+                        </div>
+												</div>
+			<button id="LAY-front-submit" style="display: none;" lay-submit="" lay-filter="LAY-front-submit"></button>
+		</div>
+
+		<script src="../../static/layui/layui.js"></script>
+		<script>
+			layui.config({
+				base: '../../static/layui/' //静态资源所在路径
+			}).extend({
+				index: 'modules/index' //主入口模块
+			}).use(['index','form','laydate'], function() {
+				var $ = layui.$
+						,laydate = layui.laydate
+						,form = layui.form;
+						laydate.render({
+							elem: '#ctime'
+						});
+																																													
+				var pk = layui.util.getUrlParam("pk");
+				if(pk) {
+					//------- 设置修改页面的属性值   ------
+					layui.util.ajax({
+						url: "./../../medical/sysDemo/info.jspx?pk=" + pk,
+						success: function(res) {
+							if(res.respData) {
+								layui.$("input,select,textarea").each(function() {
+									$(this).val(res.respData[this.name]);
+								});
+								form.render();
+							}
+						}
+					});
+				}
+			})
+		</script>
+	</body>
+
+</html>

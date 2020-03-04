@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+	http://code.alibabatech.com/schema/dubbo
+	http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+	<bean id="propertyConfigurer"
+		class="com.jcl.common.spring.web.LLwPropertyPlaceholderConfigurer">
+		<property name="envPropFiles">
+			<list>
+				<value>classpath:/config/properties/#env/application.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	 <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="com.llw.hospital.common.util.DatabaseTimeUtil.setCurrentTimeService"/>
+        <property name="arguments" ref="currentTimeService"/>
+    </bean>
+
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.jcl.orm.tkmapper.BaseServiceImpl.setFilter"/>
+		<property name="arguments" ref="orgDataFilter"/>
+	</bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="com.llw.hospital.ds.util.SequenceUtil.setCommonQueryService"/>
+        <property name="arguments" ref="commonService"/>
+    </bean>
+
+	<!--数据权限筛选-->
+	<bean id="orgDataFilter" class="com.llw.hospital.ds.filter.OrgDataFilter"/>
+
+	<!--主键生成策略-->
+	<bean id="snowFlakeSequenceGenerator" class="com.jcl.orm.tkmapper.keygenerator.SnowFlakeSequenceGenerator">
+		<constructor-arg name="workerId" value="1"/>
+		<constructor-arg name="dataCenterId" value="1"/>
+	</bean>
+
+	<!-- 表数据变化监听器 -->
+	<bean id="eventListenerFactory" class="com.llw.transaction.factory.SingleTransactionEventListenerFactory"/>
+
+	<!--ognl表达式处理 -->
+	<bean id="ognlAspect" class="com.llw.aspect.OgnlAspect"/>
+
+	<context:component-scan base-package="com.llw.hospital.ds" />
+	<context:annotation-config/>
+	<aop:aspectj-autoproxy/>
+</beans>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>处理申诉</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+	</head>
+	<body>
+
+		<div class="layui-form" lay-filter="layui-form" id="layui-form" style="padding: 20px 0 0 0;">
+			<div class="layui-card-body layui-row layui-col-space10">
+				<input type="hidden" name="appealId" disabled></input>
+				<input type="hidden" name="planId" disabled></input>
+				<input type="hidden" name="sysCode" disabled></input>
+				<input type="hidden" name="zoneCode" disabled></input>
+				<input type="hidden" name="busiType" disabled></input>
+				<input type="hidden" name="orgId" disabled></input>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">姓名</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="name" disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">身份证号码</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="idcard"  disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">性别</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="sex" disabled="disabled"></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">年龄</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="age" disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">就诊医院</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="hospitalName"  disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">就诊科室</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="departName"  disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">住院号</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="medicalNo" disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">床号</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="bedNo" disabled></input>
+					</div>
+				</div>
+				
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">疾病诊断名称</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="diagnosis" disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label">入院时间</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="inDate"  disabled></input>
+					</div>
+				</div>
+				<!-- <div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">出院时间</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="outDate" disabled></input>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">当前状态</label>
+					<div class="layui-input-block layui-input-title">
+						<input type="text" class="layui-input" name="status" disabled></input>
+					</div>
+				</div> -->
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">模板照片</label>
+					<div class="layui-upload-img-div">
+						<i class="layui-icon layui-icon-close layui-upload-del-img"></i>
+							<div class="layui-upload-div">
+								<img class="layui-upload-img" index="1552381830526-0" id="modelAddress" isload="true" style="display:block;">
+								</div>
+					</div>
+				</div>
+				<div class="layui-col-md5">
+					<label class="layui-form-label" requied="true">认证照片</label>
+					<div class="layui-upload-img-div">
+						<i class="layui-icon layui-icon-close layui-upload-del-img"></i>
+							<div class="layui-upload-div">
+								<img class="layui-upload-img" index="1552381830526-0" id="recogAddress" isload="true" style="display:block;">
+								</div>
+					</div>
+				</div>
+				<div class="layui-col-md10">
+					<label class="layui-form-label" requied="true">审核结果</label>
+					<div class="layui-input-block layui-input-title">
+						 <select class="layui-input" name="auditStatus" llw-dict-code="appealResult" id="auditStatus" lay-verify="required">
+                         </select>
+					</div>
+				</div>
+				<div class="layui-col-md10">
+					<label class="layui-form-label" requied="true">审核意见</label>
+					<div class="layui-input-block layui-input-title">
+						<textarea type="text" name="auditDesc" autocomplete="off" class="layui-textarea"></textarea>
+					</div>
+				</div>
+				
+			</div>
+			<button id="LAY-front-submit" style="display: none;" lay-submit="" lay-filter="LAY-front-submit"></button>
+		</div>
+
+		<script src="../../static/layui/layui.js"></script>
+		<script>
+			layui.config({
+				base: '../../static/layui/' //静态资源所在路径
+			}).extend({
+				index: 'modules/index' //主入口模块
+			}).use(['index','form', 'table','laydate','admin','code','upload'], function() {
+				var $ = layui.$,
+					form = layui.form;
+
+				var appealId = layui.util.getUrlParam("appealId");
+				if(appealId) {
+					//------- 设置修改页面的属性值   ------
+					layui.util.ajax({
+						url: "./../../medical/appeal/info.jspx?pk=" + appealId,
+						success: function(res) {
+							/* console.log(res.respData);
+							console.log(res.respData['modelAddress']);
+							console.log(res.respData['recogAddress']); */
+							if(res.respData) {
+								form.val('layui-form',res.respData);
+								if(res.respData.modelAddress){
+									$("#modelAddress").attr('src',res.respData.modelAddress);
+								}else{
+									$("#modelAddress").attr('src','./../../static/imgs/userDefault.png');
+								}
+								if(res.respData.recogAddress){
+									$("#recogAddress").attr('src',res.respData.recogAddress);
+								}else{
+									$("#recogAddress").attr('src','./../../static/imgs/userDefault.png');
+								}
+							}
+						}
+					});
+				}
+			})
+		</script>
+	</body>
+
+</html>

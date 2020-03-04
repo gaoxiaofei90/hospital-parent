@@ -1,0 +1,16 @@
+package ${package}.${moduleName}.ds.service.impl;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Component;
+import com.jcl.orm.tkmapper.BaseDtoExtendServiceImpl;
+
+import ${package}.${moduleName}.ds.entity.${className};
+import ${package}.${moduleName}.dto.${className}Dto;
+import ${package}.${moduleName}.api.${className}Service;
+
+
+@Component
+@Service(interfaceClass = ${package}.${moduleName}.api.${className}Service.class,timeout=3000)
+public class ${className}ServiceImpl extends BaseDtoExtendServiceImpl<${className}Dto, ${className}> implements ${className}Service {
+
+}

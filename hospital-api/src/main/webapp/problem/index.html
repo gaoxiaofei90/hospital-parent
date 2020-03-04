@@ -1,0 +1,193 @@
+﻿<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>常见问题</title>
+	<link rel="stylesheet" type="text/css" href="../resource/css/default.css">
+</head>
+<body>
+	<div class="htmleaf-container">
+		
+		<div class="htmleaf-content bgcolor-3">
+			<!-- This is mtree list -->
+			<ul class=mtree>
+			  <li><a href="#">面部受伤是否可以进行认证？</a>
+			    <ul>
+			      <li>&nbsp;&nbsp;&nbsp;&nbsp;面部受伤人员可标记为特殊人员，后台进行特殊认证审核处理，审核通过后，即此次认证成功。
+</li>
+			    </ul>
+			  </li>
+			   <li><a href="#">确认是本人可是一直认证失败，怎么处理？</a>
+			    <ul>
+			      <li>&nbsp;&nbsp;&nbsp;&nbsp;认证失败可以选择重新认证或者申诉，如果确认是本人，可提出申诉，后台进行申诉审核处理，审核通过后，即此次认证成功。
+
+</li>
+			    </ul>
+			  </li>  <li><a href="#">查床时临时外出（如手术、检查等）如何处理？</a>
+			    <ul>
+			      <li>
+	&nbsp;&nbsp;&nbsp;&nbsp;您可以点击离床登记，选择离床原因，填写事由说明提交至后台，后台进行离床登记审核，审核通过后，即此次抽查成功。
+</li>
+			    </ul>
+			  </li>  <li><a href="#">账号权限如何分配？</a>
+			    <ul>
+			      <li>
+	&nbsp;&nbsp;&nbsp;&nbsp;科室账号只能查看该科室相关信息，医院账号可以查看所有的科室相关信息。
+
+</li>
+			    </ul>
+			  </li>  <li><a href="#">账号是否可以跨地市区域使用？</a>
+			    <ul>
+			      <li>
+	&nbsp;&nbsp;&nbsp;&nbsp;同一个医院账号，可以在不同地市区域的医院局点使用。
+</li>
+			    </ul>
+			  </li>  <li><a href="#">查床认证结果是否影响参保人员进行出院结算？
+</a>
+			    <ul>
+			      <li>
+	&nbsp;&nbsp;&nbsp;&nbsp;不会影响参保人员的住院结算，但会为医院考核和控费提供依据。
+</li>
+			    </ul>
+			  </li>  <li><a href="#">可以在多台设备上使用吗？
+</a>
+			    <ul>
+			      <li>	&nbsp;&nbsp;&nbsp;&nbsp;可以，支持在不同的设备上登录同一个账号。
+
+</li>
+			    </ul>
+			  </li>
+              <li><a href="#">APP是否占内存？
+</a>
+			    <ul>
+			      <li>	
+	&nbsp;&nbsp;&nbsp;&nbsp;占用手机内存较少，您可以在我的-->清除缓存中，清理缓存释放空间
+</li>
+			    </ul>
+			  </li>
+			</ul>
+		</div>
+	</div>
+	
+	<script src='../resource/js/stopExecutionOnTimeout.js?t=1'></script>
+	<script src='../resource/js/jquery-1.10.2.js'></script>
+	<script src='../resource/js/jquery.velocity.min.js'></script>
+	<script>
+	;(function ($, window, document, undefined) {
+	    if ($('ul.mtree').length) {
+	        var collapsed = true;
+	        var close_same_level = false;
+	        var duration = 400;
+	        var listAnim = true;
+	        var easing = 'easeOutQuart';
+	        $('.mtree ul').css({
+	            'overflow': 'hidden',
+	            'height': collapsed ? 0 : 'auto',
+	            'display': collapsed ? 'none' : 'block'
+	        });
+	        var node = $('.mtree li:has(ul)');
+	        node.each(function (index, val) {
+	            $(this).children(':first-child').css('cursor', 'pointer');
+	            $(this).addClass('mtree-node mtree-' + (collapsed ? 'closed' : 'open'));
+	            $(this).children('ul').addClass('mtree-level-' + ($(this).parentsUntil($('ul.mtree'), 'ul').length + 1));
+	        });
+	        $('.mtree li > *:first-child').on('click.mtree-active', function (e) {
+	            if ($(this).parent().hasClass('mtree-closed')) {
+	                $('.mtree-active').not($(this).parent()).removeClass('mtree-active');
+	                $(this).parent().addClass('mtree-active');
+	            } else if ($(this).parent().hasClass('mtree-open')) {
+	                $(this).parent().removeClass('mtree-active');
+	            } else {
+	                $('.mtree-active').not($(this).parent()).removeClass('mtree-active');
+	                $(this).parent().toggleClass('mtree-active');
+	            }
+	        });
+	        node.children(':first-child').on('click.mtree', function (e) {
+	            var el = $(this).parent().children('ul').first();
+	            var isOpen = $(this).parent().hasClass('mtree-open');
+	            if ((close_same_level || $('.csl').hasClass('active')) && !isOpen) {
+	                var close_items = $(this).closest('ul').children('.mtree-open').not($(this).parent()).children('ul');
+	                if ($.Velocity) {
+	                    close_items.velocity({ height: 0 }, {
+	                        duration: duration,
+	                        easing: easing,
+	                        display: 'none',
+	                        delay: 100,
+	                        complete: function () {
+	                            setNodeClass($(this).parent(), true);
+	                        }
+	                    });
+	                } else {
+	                    close_items.delay(100).slideToggle(duration, function () {
+	                        setNodeClass($(this).parent(), true);
+	                    });
+	                }
+	            }
+	            el.css({ 'height': 'auto' });
+	            if (!isOpen && $.Velocity && listAnim)
+	                el.find(' > li, li.mtree-open > ul > li').css({ 'opacity': 0 }).velocity('stop').velocity('list');
+	            if ($.Velocity) {
+	                el.velocity('stop').velocity({
+	                    height: isOpen ? [
+	                        0,
+	                        el.outerHeight()
+	                    ] : [
+	                        el.outerHeight(),
+	                        0
+	                    ]
+	                }, {
+	                    queue: false,
+	                    duration: duration,
+	                    easing: easing,
+	                    display: isOpen ? 'none' : 'block',
+	                    begin: setNodeClass($(this).parent(), isOpen),
+	                    complete: function () {
+	                        if (!isOpen)
+	                            $(this).css('height', 'auto');
+	                    }
+	                });
+	            } else {
+	                setNodeClass($(this).parent(), isOpen);
+	                el.slideToggle(duration);
+	            }
+	            e.preventDefault();
+	        });
+	        function setNodeClass(el, isOpen) {
+	            if (isOpen) {
+	                el.removeClass('mtree-open').addClass('mtree-closed');
+	            } else {
+	                el.removeClass('mtree-closed').addClass('mtree-open');
+	            }
+	        }
+	        if ($.Velocity && listAnim) {
+	            $.Velocity.Sequences.list = function (element, options, index, size) {
+	                $.Velocity.animate(element, {
+	                    opacity: [
+	                        1,
+	                        0
+	                    ],
+	                    translateY: [
+	                        0,
+	                        -(index + 1)
+	                    ]
+	                }, {
+	                    delay: index * (duration / size / 2),
+	                    duration: duration,
+	                    easing: easing
+	                });
+	            };
+	        }
+	        if ($('.mtree').css('opacity') == 0) {
+	            if ($.Velocity) {
+	                $('.mtree').css('opacity', 1).children().css('opacity', 0).velocity('list');
+	            } else {
+	                $('.mtree').show(200);
+	            }
+	        }
+	    }
+	}(jQuery, this, this.document));
+	</script>
+</body>
+</html>

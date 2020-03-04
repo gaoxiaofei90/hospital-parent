@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!-- 日志目录 -->
+    <property name="logBase" value="/opt/logs/gov-api"/>
+
+    <!-- 控制台输出 -->
+    <appender name="stdout"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %date [%thread] %-5level %logger{50} - %msg%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Encoding>UTF-8</Encoding>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logBase}/log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>3</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%X{req.remoteHost} %date [%thread] %-5level %logger{80} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework.web.context.ContextLoader" level="INFO"/>
+    <logger name="springfox.documentation.spring.web.readers.parameter.ModelAttributeParameterExpander" level="INFO"/>
+    <logger name="org.springframework.core.io.support.PathMatchingResourcePatternResolver" level="INFO"/>
+    <root>
+        <level value="error"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>

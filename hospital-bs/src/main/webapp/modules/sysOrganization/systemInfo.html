@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>编辑系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="../../static/layui/css/layui.css" media="all">
+	</head>
+	<body>
+		<div class="layui-form" lay-filter="systemInfoForm" id="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+			<div class="layui-card-body">
+				<div class="layui-row layui-col-space12">
+					<div class="layui-col-md6">
+						<input type="hidden" name="orgSysId" id="orgSysId">
+						<label class="layui-form-label" requied="true">系统名称</label>
+						<div class="layui-input-block layui-input-title" id="sysCodeDiv">
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md6" id="busiTypeContainer" style="display: none;">
+					<label class="layui-form-label">业务类型</label>
+					<div class="layui-input-block layui-input-title" id="busiTypeDiv">
+
+					</div>
+				</div>
+			</div>
+			<button id="LAY-front-submit" style="display: none;" lay-submit="" lay-filter="LAY-front-submit"></button>
+		</div>
+
+		<script src="../../static/layui/layui.js"></script>
+		<script>
+			layui.config({
+				base: '../../static/layui/' //静态资源所在路径
+			}).extend({
+				index: 'modules/index' //主入口模块
+			}).use(['index','form'], function() {
+				var $ = layui.$,
+					form = layui.form;
+
+                var refreshSelect=function(name){
+                    var unit=layui.$("[name='"+name+"']").val();
+                    var select = 'dd[lay-value="'+unit+'"]';
+                    layui.$("[name='"+name+"']").siblings("div.layui-form-select").find('dl').find(select).trigger('click');
+                }
+                var disableSelect=function(name){
+                    var target=layui.$("[name='"+name+"']");
+                    target.next().find(".layui-edge").remove();
+                    target.next().find("dl").remove();
+                }
+
+				var pk = layui.util.getUrlParam("pk");
+				if(pk) {
+				    $("#orgSysId").val(pk);
+                    var sysName = layui.util.getUrlParam("sysName");
+					$("#sysCodeDiv").empty().append('<span>'+sysName+'</span>');
+					$("#busiTypeDiv").empty().append('<input type=\"checkbox\" name=\"busiTypes\" id=\"busiTypes\" lay-verify="required" llw-check-key=\"busiType\" llw-check-label=\"busiName\" ></input>');
+					$("#busiTypes").attr("llw-check-url","../../medical/sysOrganization/system/busiTypes.jspx?pk="+pk);
+					form.render('checkbox');
+					$("#busiTypeContainer").show();
+				}else{
+                    $("#sysCodeDiv").empty().append('<select name="sysCode" lay-filter="sysCode" id="sysCode" llw-select-key="sysCode" lay-verify="required"  llw-select-label="sysName" llw-select-url="../../medical/businessSystem/list.jspx"></select>');
+                    form.render("select")
+				    //新增
+					form.on("select(sysCode)",function(data){
+						$("#busiTypeDiv").empty().append('<input type=\"checkbox\" name=\"busiTypes\" id=\"busiTypes\" llw-check-key=\"busiType\" lay-verify="required" llw-check-label=\"busiName\" ></input>');
+						$("#busiTypes").attr("llw-check-url","../../medical/businessSystem/busiTypes.jspx?sysCode="+data.value);
+						form.render('checkbox');
+						$("#busiTypeContainer").show();
+					})
+				}
+			})
+
+            function getBusiTypeArr() {
+                var permissionIdArr = [];
+                layui.$("#busiTypeContainer").find("input[type=checkbox]").each(function () {
+                    if (this.checked){
+                        permissionIdArr.push(this.value);
+                    }
+                });
+                return permissionIdArr;
+            }
+		</script>
+	</body>
+
+</html>
